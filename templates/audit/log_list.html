@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Audit Logs</h3>
+        <p class="text-muted mb-0">Search and filter system activity records.</p>
+    </div>
+
+    <a href="{% url 'audit_export_csv' %}" class="btn btn-outline-secondary">
+        Export CSV
+    </a>
+</div>
+
+<div class="filter-card">
+    <form method="get" class="row g-3">
+        <div class="col-md-3">
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                class="form-control"
+                placeholder="Search actor, IP, object, description..."
+            >
+        </div>
+
+        <div class="col-md-2">
+            <select name="action" class="form-select">
+                <option value="">All Actions</option>
+                {% for value,label in actions %}
+                    <option value="{{ value }}" {% if action == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <input
+                type="text"
+                name="module"
+                value="{{ module }}"
+                class="form-control"
+                placeholder="Module"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <input
+                type="date"
+                name="date_from"
+                value="{{ date_from }}"
+                class="form-control"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <input
+                type="date"
+                name="date_to"
+                value="{{ date_to }}"
+                class="form-control"
+            >
+        </div>
+
+        <div class="col-md-1 d-grid">
+            <button class="btn btn-dark">Go</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>School</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Module</th>
+                    <th>Object</th>
+                    <th>Description</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.created_at }}</td>
+                        <td>{{ log.school.name|default:"—" }}</td>
+                        <td>{{ log.actor.username|default:"System" }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ log.get_action_display }}
+                            </span>
+                        </td>
+                        <td>{{ log.module|default:"—" }}</td>
+                        <td>
+                            {{ log.object_type|default:"—" }}
+                            {% if log.object_id %}
+                                #{{ log.object_id }}
+                            {% endif %}
+                        </td>
+                        <td>{{ log.description|default:"—" }}</td>
+                        <td>{{ log.ip_address|default:"—" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No audit logs found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

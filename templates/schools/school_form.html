@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">Configure tenant school information and SaaS permissions.</p>
+    </div>
+
+    <a href="{% url 'school_list' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">School Information</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">School Name</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">School Code</label>
+                {{ form.code }}
+                {{ form.code.errors }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Portal Subpath</label>
+                {{ form.portal_subpath }}
+                {{ form.portal_subpath.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Address</label>
+                {{ form.address }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Logo</label>
+                {{ form.logo }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Result Stamp / Seal</label>
+
+                {% if form.instance.result_stamp %}
+                    <p class="small mb-1">
+                        Current stamp:
+                        <a href="{{ form.instance.result_stamp.url }}" target="_blank">
+                            {{ form.instance.result_stamp.name }}
+                        </a>
+                    </p>
+                {% endif %}
+
+                {{ form.result_stamp }}
+                {{ form.result_stamp.errors }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Subscription</h5>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Subscription Status</label>
+                {{ form.subscription_status }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Start Date</label>
+                {{ form.subscription_start_date }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">End Date</label>
+                {{ form.subscription_end_date }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Access & Feature Toggles</h5>
+
+        <div class="row g-3">
+            <div class="col-md-3 form-check ms-3">
+                {{ form.is_active }}
+                <label class="form-check-label">School Active</label>
+            </div>
+
+            <div class="col-md-3 form-check">
+                {{ form.is_verified }}
+                <label class="form-check-label">Verified</label>
+            </div>
+
+            <div class="col-md-3 form-check">
+                {{ form.result_checker_enabled }}
+                <label class="form-check-label">Result Checker</label>
+            </div>
+
+            <div class="col-md-3 form-check">
+                {{ form.cbt_enabled }}
+                <label class="form-check-label">CBT Enabled</label>
+            </div>
+
+            <div class="col-md-3 form-check ms-3">
+                {{ form.finance_enabled }}
+                <label class="form-check-label">Finance Enabled</label>
+            </div>
+
+            <div class="col-md-3 form-check">
+                {{ form.parent_portal_enabled }}
+                <label class="form-check-label">Parent Portal</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary px-4">Save School</button>
+        <a href="{% url 'school_list' %}" class="btn btn-light">Cancel</a>
+    </div>
+</form>
+{% endblock %}

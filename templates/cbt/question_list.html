@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">CBT Question Bank</h3>
+        <p class="text-muted mb-0">Manage exam questions.</p>
+    </div>
+
+    <a href="{% url 'cbt_question_create' %}" class="btn btn-primary">+ Add Question</a>
+</div>
+
+<div class="filter-card">
+    <form method="get" class="row g-3">
+        <div class="col-md-10">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search question, subject, class...">
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-dark">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Difficulty</th>
+                    <th>Answer</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td>{{ question.question_text|striptags|truncatechars:80 }}</td>
+                        <td>{{ question.school_class.name }}</td>
+                        <td>{{ question.subject.name }}</td>
+                        <td>{{ question.get_difficulty_display }}</td>
+                        <td><strong>{{ question.correct_option }}</strong></td>
+                        <td>
+                            {% if question.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'cbt_question_update' question.pk %}" class="btn btn-sm btn-light">Edit</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">No questions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

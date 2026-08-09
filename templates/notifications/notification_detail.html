@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content-card">
+
+    {% if notification.announcement.is_pinned %}
+        <span class="badge bg-warning text-dark mb-3">
+            Pinned Announcement
+        </span>
+    {% endif %}
+
+    <h3 class="fw-bold mb-3">
+        {{ notification.announcement.title }}
+    </h3>
+
+    <p class="text-muted">
+        Published:
+        {{ notification.announcement.publish_at }}
+    </p>
+
+    <hr>
+
+    <div class="announcement-content">
+        {{ notification.announcement.message|linebreaks }}
+    </div>
+
+    {% if notification.announcement.attachment %}
+        <div class="mt-4">
+            <a href="{{ notification.announcement.attachment.url }}"
+               target="_blank"
+               class="btn btn-primary">
+                Open Attachment
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

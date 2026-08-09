@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h3 class="fw-bold mb-1">
+            My Profile
+        </h3>
+
+        <p class="text-muted mb-0">
+            Manage your account information.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a href="{% url 'edit_profile' %}"
+           class="btn btn-outline-primary">
+            Edit Profile
+        </a>
+
+        <a href="{% url 'change_password' %}"
+           class="btn btn-primary">
+            Change Password
+        </a>
+
+    </div>
+
+</div>
+
+<div class="content-card">
+
+    <div class="row g-4 align-items-center">
+
+        <div class="col-md-3 text-center">
+
+            {% if user_obj.profile_picture %}
+
+                <img src="{{ user_obj.profile_picture.url }}"
+                     class="profile-avatar">
+
+            {% else %}
+
+                <div class="profile-avatar-placeholder">
+                    {{ user_obj.first_name|first }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-9">
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <strong>Full Name</strong><br>
+                    {{ user_obj.get_full_name }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Email</strong><br>
+                    {{ user_obj.email }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Phone</strong><br>
+                    {{ user_obj.phone_number|default:"—" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Role</strong><br>
+                    {{ user_obj.get_role_display }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>School</strong><br>
+                    {{ user_obj.school.name|default:"System" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Joined</strong><br>
+                    {{ user_obj.date_joined }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">My Subjects</h3>
+        <p class="text-muted mb-0">Subjects assigned to {{ staff.full_name }}.</p>
+    </div>
+
+    <a href="{% url 'teacher_workspace' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-4">
+    {% for subject in assigned_subjects %}
+        <div class="col-md-6 col-lg-4">
+            <div class="content-card h-100">
+                <h5 class="fw-bold">{{ subject.name }}</h5>
+                <p class="text-muted">{{ subject.code|default:"No subject code" }}</p>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'result_setup' %}" class="btn btn-primary">
+                        Enter Scores
+                    </a>
+
+                    <a href="{% url 'cbt_question_create' %}" class="btn btn-outline-primary">
+                        Add CBT Question
+                    </a>
+
+                    <a href="{% url 'lesson_create' %}" class="btn btn-outline-secondary">
+                        Upload Resource
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="content-card text-center text-muted py-5">
+                No subject has been assigned to you yet.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

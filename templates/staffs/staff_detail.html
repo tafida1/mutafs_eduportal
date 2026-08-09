@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ staff.full_name }}</h3>
+        <p class="text-muted mb-0">Staff profile and teaching assignments.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'staff_update' staff.pk %}" class="btn btn-primary">Edit Staff</a>
+        <a href="{% url 'staff_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Staff ID</span>
+            <h5>{{ staff.staff_id }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Type</span>
+            <h5>{{ staff.get_staff_type_display }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Designation</span>
+            <h5>{{ staff.designation|default:"—" }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Status</span>
+            <h5>{{ staff.get_status_display }}</h5>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="content-card text-center">
+            {% if staff.passport %}
+                <img src="{{ staff.passport.url }}" class="student-photo mb-3" alt="{{ staff.full_name }}">
+            {% else %}
+                <div class="student-photo-placeholder mb-3">
+                    {{ staff.user.first_name|slice:":1" }}{{ staff.user.last_name|slice:":1" }}
+                </div>
+            {% endif %}
+
+            <h5 class="fw-bold">{{ staff.full_name }}</h5>
+            <p class="text-muted mb-0">{{ staff.user.username }}</p>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Staff Information</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Email:</strong> {{ staff.user.email|default:"—" }}</p>
+                    <p><strong>Phone:</strong> {{ staff.phone|default:"—" }}</p>
+                    <p><strong>Gender:</strong> {{ staff.get_gender_display }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Qualification:</strong> {{ staff.qualification|default:"—" }}</p>
+                    <p><strong>Employment Date:</strong> {{ staff.employment_date|default:"—" }}</p>
+                    <p><strong>User Role:</strong> {{ staff.user.get_role_display }}</p>
+                </div>
+
+                <div class="col-12">
+                    <p><strong>Address:</strong> {{ staff.address|default:"—" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Assigned Classes</h5>
+
+            {% for class in staff.assigned_classes.all %}
+                <span class="badge bg-light text-dark border mb-2">{{ class.name }}</span>
+            {% empty %}
+                <p class="text-muted">No class assigned.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Assigned Subjects</h5>
+
+            {% for subject in staff.assigned_subjects.all %}
+                <span class="badge bg-light text-dark border mb-2">{{ subject.name }}</span>
+            {% empty %}
+                <p class="text-muted">No subject assigned.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="content-card mt-4">
+    <h5 class="fw-bold mb-3">Recent Staff Audit Logs</h5>
+
+    {% for log in audit_logs %}
+        <div class="activity-item">
+            <strong>{{ log.get_action_display }}</strong>
+            <p class="mb-1">{{ log.description }}</p>
+            <small class="text-muted">{{ log.created_at }} by {{ log.actor|default:"System" }}</small>
+        </div>
+    {% empty %}
+        <p class="text-muted">No audit logs for this staff yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

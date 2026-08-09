@@ -1,0 +1,2 @@
+id,student_id,subject_id,ca_score,exam_score,total_score,grade,remark,is_published
+1,1,1,21.00,35.00,77.00,,,False

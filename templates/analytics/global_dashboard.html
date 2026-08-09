@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Global SaaS Analytics</h3>
+        <p class="text-muted mb-0">Mutafs EduPortal SaaS business and platform overview.</p>
+    </div>
+
+    <button onclick="window.print()" class="btn btn-outline-primary">
+        Print Report
+    </button>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Total Schools</span><h2>{{ total_schools }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Active Schools</span><h2>{{ active_schools }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Disabled Schools</span><h2>{{ disabled_schools }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Total Users</span><h2>{{ total_users }}</h2></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Trial Schools</span><h2>{{ trial_schools }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Active Subscriptions</span><h2>{{ active_subscriptions }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Expired</span><h2>{{ expired_subscriptions }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Suspended</span><h2>{{ suspended_subscriptions }}</h2></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>SaaS Subscription Revenue</span>
+            <h2>₦{{ subscription_revenue }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>School Fees Paid</span>
+            <h2>₦{{ school_fees_paid }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>School Fees Outstanding</span>
+            <h2>₦{{ school_fees_outstanding }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-2"><div class="stat-card"><span>Super Admins</span><h2>{{ super_admins }}</h2></div></div>
+    <div class="col-md-2"><div class="stat-card"><span>School Admins</span><h2>{{ school_admins }}</h2></div></div>
+    <div class="col-md-2"><div class="stat-card"><span>Teachers</span><h2>{{ teachers }}</h2></div></div>
+    <div class="col-md-2"><div class="stat-card"><span>Students</span><h2>{{ students }}</h2></div></div>
+    <div class="col-md-2"><div class="stat-card"><span>Parents</span><h2>{{ parents }}</h2></div></div>
+    <div class="col-md-2"><div class="stat-card"><span>Staff Profiles</span><h2>{{ total_staff_profiles }}</h2></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>CBT Attempts</span><h2>{{ cbt_attempts }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>CBT Average</span><h2>{{ cbt_average|floatformat:1 }}%</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Result Entries</span><h2>{{ result_entries }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Published Results</span><h2>{{ published_result_entries }}</h2></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <span>Audit Logs</span>
+            <h2>{{ audit_logs }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="stat-card">
+            <span>Security Events</span>
+            <h2>{{ security_events }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Recent Schools</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>School</th>
+                            <th>Status</th>
+                            <th>Subscription</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for school in recent_schools %}
+                            <tr>
+                                <td><strong>{{ school.name }}</strong></td>
+                                <td>
+                                    {% if school.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Disabled</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ school.get_subscription_status_display }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    No schools found.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Subscription Watchlist</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>School</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>End Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for sub in recent_subscriptions %}
+                            <tr>
+                                <td>{{ sub.school.name }}</td>
+                                <td>{{ sub.plan.name|default:"—" }}</td>
+                                <td>{{ sub.get_status_display }}</td>
+                                <td>{{ sub.end_date|default:"—" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No subscriptions found.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Schools Overview</h5>
+            <div style="height:300px;">
+                <canvas id="schoolsOverviewChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">User Distribution</h5>
+            <div style="height:350px;">
+                <canvas id="userDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mt-4">
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Subscription Status</h5>
+            <div style="height:300px;">
+                <canvas id="subscriptionStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Finance Overview</h5>
+            <div style="height:350px;">
+                <canvas id="financeOverviewChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+new Chart(document.getElementById("schoolsOverviewChart"), {
+    type: "doughnut",
+    data: {
+        labels: ["Active Schools", "Disabled Schools"],
+        datasets: [{
+            data: [{{ active_schools }}, {{ disabled_schools }}]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+new Chart(document.getElementById("userDistributionChart"), {
+    type: "bar",
+    data: {
+        labels: ["Super Admins", "School Admins", "Teachers", "Students", "Parents"],
+        datasets: [{
+            label: "Users",
+            data: [
+                {{ super_admins }},
+                {{ school_admins }},
+                {{ teachers }},
+                {{ students }},
+                {{ parents }}
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById("subscriptionStatusChart"), {
+    type: "pie",
+    data: {
+        labels: ["Trial", "Active", "Expired", "Suspended"],
+        datasets: [{
+            data: [
+                {{ trial_schools }},
+                {{ active_subscriptions }},
+                {{ expired_subscriptions }},
+                {{ suspended_subscriptions }}
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+new Chart(document.getElementById("financeOverviewChart"), {
+    type: "bar",
+    data: {
+        labels: ["SaaS Revenue", "Fees Paid", "Fees Outstanding"],
+        datasets: [{
+            label: "Amount",
+            data: [
+                {{ subscription_revenue }},
+                {{ school_fees_paid }},
+                {{ school_fees_outstanding }}
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">School Subscriptions</h3>
+        <p class="text-muted mb-0">Control tenant subscriptions and expiry status.</p>
+    </div>
+</div>
+
+<div class="filter-card">
+    <form method="get" class="row g-3">
+        <div class="col-md-7">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search school...">
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                {% for value,label in statuses %}
+                    <option value="{{ value }}" {% if status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-dark">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>School</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Days Left</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for sub in subscriptions %}
+                    <tr>
+                        <td><strong>{{ sub.school.name }}</strong></td>
+                        <td>{{ sub.plan.name|default:"—" }}</td>
+                        <td>
+                            {% if sub.status == "ACTIVE" %}
+                                <span class="badge bg-success">Active</span>
+                            {% elif sub.status == "TRIAL" %}
+                                <span class="badge bg-info">Trial</span>
+                            {% elif sub.status == "EXPIRED" %}
+                                <span class="badge bg-danger">Expired</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ sub.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sub.start_date }}</td>
+                        <td>{{ sub.end_date|default:"—" }}</td>
+                        <td>{{ sub.days_remaining|default:"—" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'school_subscription_update' sub.school.pk %}" class="btn btn-sm btn-light">Edit</a>
+                            <a href="{% url 'subscription_payment_create' sub.pk %}" class="btn btn-sm btn-outline-primary">Payment</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No subscription records found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

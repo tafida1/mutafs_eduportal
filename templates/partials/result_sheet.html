@@ -1,0 +1,112 @@
+<div class="result-sheet">
+
+    {% if school.logo %}
+        <div class="result-watermark">
+            <img src="{{ school.logo.url }}" alt="Watermark">
+        </div>
+    {% endif %}
+
+    <div class="result-header">
+        {% if school.logo %}
+            <img src="{{ school.logo.url }}" class="school-logo" alt="School Logo">
+        {% endif %}
+
+        <div>
+            <h2>{{ school.name }}</h2>
+            <p>{{ school.address|default:"" }}</p>
+            <h5>Student Academic Result Sheet</h5>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="student-info-grid">
+        <div>
+            <p><strong>Name:</strong> {{ student.full_name }}</p>
+            <p><strong>Admission No:</strong> {{ student.admission_number }}</p>
+            <p><strong>Gender:</strong> {{ student.get_gender_display }}</p>
+            <p><strong>Class:</strong> {{ student.current_class.name|default:"—" }}</p>
+        </div>
+
+        <div>
+            <p><strong>Session:</strong> {{ session.name }}</p>
+            <p><strong>Term:</strong> {{ term.get_name_display }}</p>
+            <p><strong>Total:</strong> {{ total }}</p>
+            <p><strong>Average:</strong> {{ average|floatformat:2 }}</p>
+        </div>
+
+        <div class="student-photo-box">
+            {% if student.passport %}
+                <img src="{{ student.passport.url }}" alt="{{ student.full_name }}">
+            {% else %}
+                <div class="photo-placeholder">
+                    No Photo
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <table class="table table-bordered result-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>CA</th>
+                <th>Exam</th>
+                <th>Total</th>
+                <th>Grade</th>
+                <th>Remark</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.subject.name }}</td>
+                    <td>{{ entry.ca_score }}</td>
+                    <td>{{ entry.exam_score }}</td>
+                    <td>{{ entry.total_score }}</td>
+                    <td>{{ entry.grade }}</td>
+                    <td>{{ entry.remark }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">
+                        No result entries available.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="result-footer-grid">
+        <div>
+            <p><strong>Teacher's Comment:</strong></p>
+            <div class="comment-line"></div>
+        </div>
+
+        <div>
+            <p><strong>Principal/Admin Comment:</strong></p>
+            <div class="comment-line"></div>
+        </div>
+    </div>
+
+    <div class="signature-grid">
+        <div>
+            <div class="signature-line"></div>
+            <p>Class Teacher</p>
+        </div>
+
+        <div>
+            <div class="signature-line"></div>
+            <p>Principal / Head Teacher</p>
+        </div>
+    </div>
+
+    {% if student.result_qr %}
+        <div class="qr-box">
+            <img src="{{ student.result_qr.url }}" alt="Result QR">
+            <p>Scan to verify result</p>
+        </div>
+    {% endif %}
+
+</div>

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Academic Intelligence</h3>
+            <p class="text-muted mb-0">
+                AI-style academic insight for {{ student.full_name }}.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Average Score</span>
+                <h2>{{ insight.average_score }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Attendance</span>
+                <h2>{{ insight.attendance_percentage }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>CBT Average</span>
+                <h2>{{ insight.cbt_average }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Risk Level</span>
+
+                {% if insight.risk_level == "HIGH" %}
+                    <h2 class="text-danger">{{ insight.risk_label }}</h2>
+                {% elif insight.risk_level == "MEDIUM" %}
+                    <h2 class="text-warning">{{ insight.risk_label }}</h2>
+                {% else %}
+                    <h2 class="text-success">{{ insight.risk_label }}</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-6">
+            <div class="content-card">
+                <h5 class="fw-bold mb-3">Weak Subjects</h5>
+
+                {% for result in insight.weak_subjects %}
+                    <div class="border rounded-4 p-3 mb-2">
+                        <strong>{{ result.subject.name }}</strong>
+                        <span class="float-end text-danger">
+                            {{ result.total_score }}
+                        </span>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No weak subjects detected.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="content-card">
+                <h5 class="fw-bold mb-3">Strong Subjects</h5>
+
+                {% for result in insight.strong_subjects %}
+                    <div class="border rounded-4 p-3 mb-2">
+                        <strong>{{ result.subject.name }}</strong>
+                        <span class="float-end text-success">
+                            {{ result.total_score }}
+                        </span>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No strong subjects detected yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">AI Academic Comment</h5>
+
+        <div class="alert alert-primary rounded-4 mb-0">
+            {{ ai_comment }}
+        </div>
+    </div>
+
+    <div class="content-card">
+        <h5 class="fw-bold mb-3">Smart Recommendations</h5>
+
+        {% for item in insight.recommendations %}
+            <div class="alert alert-info rounded-4">
+                {{ item }}
+            </div>
+        {% empty %}
+            <p class="text-muted">No recommendation available yet.</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,2 @@
+id,student_id,total_amount,amount_paid,balance,status
+1,1,0.00,0.00,0.00,UNPAID

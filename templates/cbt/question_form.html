@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">Create CBT questions with maths, science symbols, diagrams and equations.</p>
+    </div>
+
+    <a href="{% url 'cbt_question_list' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="content-card mb-4 math-helper-card">
+    <h5 class="fw-bold mb-3">Maths & Science Symbols Helper</h5>
+
+    <div class="symbol-toolbar">
+        <button type="button" onclick="copySymbol('x²')">x²</button>
+        <button type="button" onclick="copySymbol('x³')">x³</button>
+        <button type="button" onclick="copySymbol('x⁴')">x⁴</button>
+        <button type="button" onclick="copySymbol('x⁵')">x⁵</button>
+        <button type="button" onclick="copySymbol('x⁶')">x⁶</button>
+        <button type="button" onclick="copySymbol('x⁷')">x⁷</button>
+        <button type="button" onclick="copySymbol('x⁸')">x⁸</button>
+        <button type="button" onclick="copySymbol('x⁹')">x⁹</button>
+
+        <button type="button" onclick="copySymbol('x₀')">x₀</button>
+        <button type="button" onclick="copySymbol('x₁')">x₁</button>
+        <button type="button" onclick="copySymbol('x₂')">x₂</button>
+        <button type="button" onclick="copySymbol('xₙ')">xₙ</button>
+
+        <button type="button" onclick="copySymbol('√')">√</button>
+        <button type="button" onclick="copySymbol('∛')">∛</button>
+        <button type="button" onclick="copySymbol('π')">π</button>
+        <button type="button" onclick="copySymbol('θ')">θ</button>
+        <button type="button" onclick="copySymbol('α')">α</button>
+        <button type="button" onclick="copySymbol('β')">β</button>
+        <button type="button" onclick="copySymbol('λ')">λ</button>
+        <button type="button" onclick="copySymbol('μ')">μ</button>
+        <button type="button" onclick="copySymbol('Ω')">Ω</button>
+        <button type="button" onclick="copySymbol('Δ')">Δ</button>
+
+        <button type="button" onclick="copySymbol('≤')">≤</button>
+        <button type="button" onclick="copySymbol('≥')">≥</button>
+        <button type="button" onclick="copySymbol('≠')">≠</button>
+        <button type="button" onclick="copySymbol('≈')">≈</button>
+        <button type="button" onclick="copySymbol('±')">±</button>
+        <button type="button" onclick="copySymbol('÷')">÷</button>
+        <button type="button" onclick="copySymbol('×')">×</button>
+        <button type="button" onclick="copySymbol('∞')">∞</button>
+
+        <button type="button" onclick="copySymbol('log₁₀')">log₁₀</button>
+        <button type="button" onclick="copySymbol('log₂')">log₂</button>
+        <button type="button" onclick="copySymbol('ln')">ln</button>
+
+        <button type="button" onclick="copySymbol('H₂O')">H₂O</button>
+        <button type="button" onclick="copySymbol('CO₂')">CO₂</button>
+        <button type="button" onclick="copySymbol('O₂')">O₂</button>
+        <button type="button" onclick="copySymbol('Na⁺')">Na⁺</button>
+        <button type="button" onclick="copySymbol('Cl⁻')">Cl⁻</button>
+        <button type="button" onclick="copySymbol('e⁻')">e⁻</button>
+    </div>
+
+    <div class="advanced-math-box mt-4">
+        <h6 class="fw-bold">Advanced Math Input</h6>
+        <p class="mb-1">You can type LaTeX equations like:</p>
+        <code>\(x^2 + y^2 = z^2\)</code><br>
+        <code>\(\log_{2}(8)\)</code><br>
+        <code>\(\frac{x+1}{x-1}\)</code><br>
+        <code>\(\sqrt{x^2 + 4}\)</code>
+    </div>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.media }}
+
+    <div class="content-card cbt-question-form">
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <label class="form-label">School Class</label>
+                {{ form.school_class }}
+                {{ form.school_class.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Subject</label>
+                {{ form.subject }}
+                {{ form.subject.errors }}
+            </div>
+
+            <div class="col-12 question-editor">
+                <label class="form-label">Question Text</label>
+                {{ form.question_text }}
+                {{ form.question_text.errors }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Question Image / Diagram / Graph</label>
+                {{ form.diagram }}
+                {{ form.diagram.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Option A</label>
+                {{ form.option_a }}
+                {{ form.option_a.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Option B</label>
+                {{ form.option_b }}
+                {{ form.option_b.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Option C</label>
+                {{ form.option_c }}
+                {{ form.option_c.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Option D</label>
+                {{ form.option_d }}
+                {{ form.option_d.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Correct Option</label>
+                {{ form.correct_option }}
+                {{ form.correct_option.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Difficulty</label>
+                {{ form.difficulty }}
+                {{ form.difficulty.errors }}
+            </div>
+
+            <div class="col-12 explanation-editor">
+                <label class="form-label">Explanation</label>
+                {{ form.explanation }}
+                {{ form.explanation.errors }}
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    {{ form.is_active }}
+                    <label class="form-check-label">Is Active</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-primary px-4">Save Question</button>
+        </div>
+    </div>
+</form>
+
+<script>
+function copySymbol(symbol) {
+    navigator.clipboard.writeText(symbol);
+    alert(symbol + " copied. Paste it inside your question or option field.");
+}
+</script>
+{% endblock %}

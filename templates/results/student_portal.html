@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h3 class="fw-bold mb-1">
+            My Results
+        </h3>
+
+        <p class="text-muted mb-0">
+            Academic performance and result history.
+        </p>
+    </div>
+
+</div>
+
+{% if outstanding_invoice %}
+
+    <div class="alert alert-warning">
+        You currently have outstanding school fees.
+        Some result features may be restricted.
+    </div>
+
+{% endif %}
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Average Score</span>
+            <h2>{{ average_score|floatformat:1 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Highest Score</span>
+            <h2>{{ highest_score|floatformat:1 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Lowest Score</span>
+            <h2>{{ lowest_score|floatformat:1 }}</h2>
+        </div>
+    </div>
+
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Term</th>
+                    <th>Subjects</th>
+                    <th>Total</th>
+                    <th>Average</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in term_results %}
+                    <tr>
+                        <td>{{ item.session__name }}</td>
+                        <td>{{ item.term__name }}</td>
+                        <td>{{ item.subjects_count }}</td>
+                        <td>{{ item.total }}</td>
+                        <td>{{ item.average|floatformat:2 }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'student_term_result' student.id item.session item.term %}"
+                               class="btn btn-sm btn-primary">
+                                View / Print Result
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No published results available.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

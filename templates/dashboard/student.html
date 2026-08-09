@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+
+<style>
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    transition: 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.section-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Welcome -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold">
+            Welcome back,
+            {{ student.user.first_name }} 👋
+        </h2>
+
+        <p class="text-muted">
+            {{ student.current_class.name }}
+            •
+            {{ current_session }}
+            •
+            {{ current_term }}
+        </p>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="dashboard-grid mb-4">
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Attendance
+            </small>
+
+            <div class="stat-number text-success">
+                {{ attendance_percentage }}%
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                CBT Average
+            </small>
+
+            <div class="stat-number text-primary">
+                {{ average_cbt_score }}%
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Subjects
+            </small>
+
+            <div class="stat-number text-info">
+                {{ total_subjects }}
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Outstanding Fees
+            </small>
+
+            <div class="stat-number text-danger">
+                ₦{{ outstanding_fees }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AI Insight & Risk Profile -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6">
+            <div class="section-card">
+                <h5 class="fw-bold mb-2">AI Academic Insight</h5>
+                <p class="text-muted">
+                    View your performance analysis, weak subjects, strong subjects and recommendations.
+                </p>
+                <a href="{% url 'my_academic_insight' %}" class="btn btn-primary">
+                    Open My Insight
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="section-card">
+                <h5 class="fw-bold mb-2">My Risk Profile</h5>
+                <p class="text-muted">
+                    Check your academic risk score based on results, attendance, CBT and fees.
+                </p>
+                <a href="{% url 'my_risk_profile' %}" class="btn btn-outline-danger">
+                    View Risk Profile
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Widgets -->
+
+    <div class="row g-4">
+
+        <!-- Timetable -->
+
+        <div class="col-lg-6">
+
+            <div class="section-card">
+
+                <h5 class="fw-bold mb-3">
+                    Today's Timetable
+                </h5>
+
+                {% for item in today_timetable %}
+
+                    <div class="border rounded-4 p-3 mb-3">
+
+                        <strong>
+                            {{ item.subject.name }}
+                        </strong>
+
+                        <div class="text-muted small">
+                            {{ item.start_time }} - {{ item.end_time }}
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="text-muted">
+                        No classes today.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- Notifications -->
+
+        <div class="col-lg-6">
+
+            <div class="section-card">
+
+                <h5 class="fw-bold mb-3">
+                    Notifications
+                </h5>
+
+                {% for notification in recent_notifications %}
+
+                    <div class="border rounded-4 p-3 mb-3">
+
+                        <strong>
+                            {{ notification.title }}
+                        </strong>
+
+                        <div class="small text-muted">
+                            {{ notification.created_at|timesince }} ago
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="text-muted">
+                        No notifications available.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Lesson Resources -->
+
+    <div class="section-card mt-4">
+
+        <h5 class="fw-bold mb-3">
+            Recent Lesson Resources
+        </h5>
+
+        <div class="row">
+
+            {% for resource in recent_resources %}
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <strong>
+                            {{ resource.title }}
+                        </strong>
+
+                        <div class="small text-muted mb-2">
+                            {{ resource.subject.name }}
+                        </div>
+
+                        <a href="{{ resource.file.url }}"
+                           class="btn btn-sm btn-primary rounded-pill"
+                           target="_blank">
+
+                            Open Resource
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted">
+                    No resources uploaded yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

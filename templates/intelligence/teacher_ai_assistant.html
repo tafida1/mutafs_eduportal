@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">AI Teacher Assistant</h3>
+            <p class="text-muted mb-0">
+                Generate lesson ideas, CBT questions, explanations and assignments.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="content-card">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button class="btn btn-primary w-100">
+                        Generate Content
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="content-card">
+                <h5 class="fw-bold mb-3">Generated Output</h5>
+
+                {% if generated_content %}
+                    <pre style="white-space: pre-wrap; font-family: inherit;">{{ generated_content }}</pre>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Fill the form and click Generate Content.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

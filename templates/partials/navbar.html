@@ -1,0 +1,17 @@
+<header class="topbar">
+    <div>
+        <h5 class="mb-0">{{ APP_NAME }}</h5>
+        {% if current_school %}
+            <small>{{ current_school.name }}</small>
+        {% else %}
+            <small>{{ COMPANY_NAME }}</small>
+        {% endif %}
+    </div>
+
+    <div class="topbar-user">
+        {% if request.user.is_authenticated %}
+            <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+            <span class="badge bg-primary">{{ request.user.get_role_display }}</span>
+        {% endif %}
+    </div>
+</header>

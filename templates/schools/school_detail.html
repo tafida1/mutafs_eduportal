@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ school.name }}</h3>
+        <p class="text-muted mb-0">Tenant profile, subscription and administrators.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'school_create_admin' school.pk %}" class="btn btn-primary">
+            + Create School Admin
+        </a>
+
+        <a href="{% url 'school_update' school.pk %}" class="btn btn-outline-secondary">
+            Edit
+        </a>
+
+        <a href="{% url 'school_toggle_status' school.pk %}" class="btn {% if school.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+            {% if school.is_active %}Disable School{% else %}Enable School{% endif %}
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Status</span>
+            <h4>
+                {% if school.is_active %}
+                    Active
+                {% else %}
+                    Disabled
+                {% endif %}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Subscription</span>
+            <h4>{{ school.get_subscription_status_display }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Days Remaining</span>
+            <h4>
+                {% if school.days_remaining != None %}
+                    {{ school.days_remaining }}
+                {% else %}
+                    —
+                {% endif %}
+            </h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Portal Path</span>
+            <h4>{{ school.portal_subpath }}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">School Information</h5>
+
+            <p><strong>Code:</strong> {{ school.code }}</p>
+            <p><strong>Email:</strong> {{ school.email|default:"—" }}</p>
+            <p><strong>Phone:</strong> {{ school.phone|default:"—" }}</p>
+            <p><strong>Address:</strong> {{ school.address|default:"—" }}</p>
+
+            <hr>
+
+            <p><strong>Result Checker:</strong> {{ school.result_checker_enabled|yesno:"Enabled,Disabled" }}</p>
+            <p><strong>CBT:</strong> {{ school.cbt_enabled|yesno:"Enabled,Disabled" }}</p>
+            <p><strong>Finance:</strong> {{ school.finance_enabled|yesno:"Enabled,Disabled" }}</p>
+            <p><strong>Parent Portal:</strong> {{ school.parent_portal_enabled|yesno:"Enabled,Disabled" }}</p>
+
+            <p>
+                <strong>Public Result Checker:</strong><br>
+                <code>/results/{{ school.portal_subpath }}/</code>
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">School Admins</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for admin_user in school_admins %}
+                            <tr>
+                                <td>
+                                    <strong>{{ admin_user.get_full_name|default:admin_user.username }}</strong><br>
+                                    <small>{{ admin_user.username }}</small>
+                                </td>
+                                <td>{{ admin_user.email }}</td>
+                                <td>
+                                    {% if admin_user.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-muted">No school admin created yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card mt-4">
+    <h5 class="fw-bold mb-3">Recent School Audit Logs</h5>
+
+    {% for log in audit_logs %}
+        <div class="activity-item">
+            <strong>{{ log.get_action_display }}</strong>
+            <p class="mb-1">{{ log.description }}</p>
+            <small class="text-muted">{{ log.created_at }} by {{ log.actor|default:"System" }}</small>
+        </div>
+    {% empty %}
+        <p class="text-muted">No audit logs for this school yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

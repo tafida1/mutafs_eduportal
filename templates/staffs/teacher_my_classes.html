@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">My Classes</h3>
+        <p class="text-muted mb-0">Classes assigned to {{ staff.full_name }}.</p>
+    </div>
+
+    <a href="{% url 'teacher_workspace' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-4">
+    {% for class in assigned_classes %}
+        <div class="col-md-6 col-lg-4">
+            <div class="content-card h-100">
+                <h5 class="fw-bold">{{ class.name }}</h5>
+                <p class="text-muted">{{ class.get_category_display }}</p>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'teacher_class_students' class.id %}" class="btn btn-primary">
+                        View Students
+                    </a>
+
+                    <a href="{% url 'student_attendance_select' %}" class="btn btn-outline-primary">
+                        Mark Attendance
+                    </a>
+
+                    <a href="{% url 'result_setup' %}" class="btn btn-outline-primary">
+                        Enter Scores
+                    </a>
+
+                    <a href="{% url 'lesson_create' %}" class="btn btn-outline-secondary">
+                        Upload Lesson Note
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="content-card text-center text-muted py-5">
+                No class has been assigned to you yet.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

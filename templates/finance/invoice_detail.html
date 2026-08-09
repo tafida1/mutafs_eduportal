@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h3 class="fw-bold mb-1">
+            Invoice #{{ invoice.id }}
+        </h3>
+
+        <p class="text-muted mb-0">
+            {{ invoice.student.user.get_full_name }}
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2">
+
+        {% if invoice.balance > 0 %}
+            <a href="{% url 'initialize_invoice_payment' invoice.id %}"
+            class="btn btn-success">
+                Pay Online
+            </a>
+        {% endif %}
+
+        {% if request.user.is_school_admin %}
+            <a href="{% url 'generate_student_invoice' invoice.student.id %}"
+            class="btn btn-warning">
+                Regenerate Invoice
+            </a>
+
+            <a href="{% url 'record_payment' invoice.id %}"
+            class="btn btn-primary">
+                Record Payment
+            </a>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="content-card">
+
+            <h5 class="fw-bold mb-3">
+                Invoice Items
+            </h5>
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in items %}
+
+                            <tr>
+                                <td>{{ item.category_name }}</td>
+                                <td class="text-end">
+                                    ₦{{ item.amount }}
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+                            <th>Total</th>
+                            <th class="text-end">
+                                ₦{{ invoice.total_amount }}
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>Paid</th>
+                            <th class="text-end text-success">
+                                ₦{{ invoice.amount_paid }}
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>Balance</th>
+                            <th class="text-end text-danger">
+                                ₦{{ invoice.balance }}
+                            </th>
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="content-card">
+
+            <h5 class="fw-bold mb-3">
+                Payments
+            </h5>
+
+            {% for payment in payments %}
+
+                <div class="border rounded p-3 mb-3">
+
+                    <h6 class="fw-bold">
+                        ₦{{ payment.amount }}
+                    </h6>
+
+                    <p class="small text-muted mb-2">
+                        {{ payment.payment_method }}
+                    </p>
+
+                    <a href="{% url 'printable_receipt' payment.id %}"
+                       target="_blank"
+                       class="btn btn-sm btn-outline-primary">
+                        Print Receipt
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted">
+                    No payments yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

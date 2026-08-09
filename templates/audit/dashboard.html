@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Audit Trail</h3>
+        <p class="text-muted mb-0">Monitor user activities, security events and system changes.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'audit_export_csv' %}" class="btn btn-outline-secondary">Export CSV</a>
+        <a href="{% url 'audit_log_list' %}" class="btn btn-primary">View Logs</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Total Logs</span>
+            <h2>{{ total_logs }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Security Events</span>
+            <h2>{{ security_logs }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Create Events</span>
+            <h2>{{ create_logs }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Update Events</span>
+            <h2>{{ update_logs }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">Recent Activities</h5>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                    <th>Module</th>
+                    <th>Description</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log.created_at }}</td>
+                        <td>{{ log.actor.username|default:"System" }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                {{ log.get_action_display }}
+                            </span>
+                        </td>
+                        <td>{{ log.module|default:"—" }}</td>
+                        <td>{{ log.description|default:"—" }}</td>
+                        <td>{{ log.ip_address|default:"—" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No audit activity found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

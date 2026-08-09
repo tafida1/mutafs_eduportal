@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h3 class="fw-bold mb-1">
+            Finance Dashboard
+        </h3>
+
+        <p class="text-muted mb-0">
+            School billing and payment overview.
+        </p>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Total Billed</span>
+            <h2>₦{{ total_billed }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Total Paid</span>
+            <h2>₦{{ total_paid }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Outstanding</span>
+            <h2>₦{{ total_balance }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Invoices</span>
+            <h2>{{ invoice_count }}</h2>
+        </div>
+    </div>
+
+</div>
+
+<div class="content-card mt-4">
+    <h5 class="fw-bold mb-3">Finance Management</h5>
+
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'fee_category_list' %}" class="btn btn-outline-primary">
+            Fee Categories
+        </a>
+
+        <a href="{% url 'fee_category_create' %}" class="btn btn-primary">
+            Add Fee Category
+        </a>
+
+
+        <a href="{% url 'fee_structure_list' %}" class="btn btn-outline-dark">
+            Fee Structures
+        </a>
+
+        <a href="{% url 'fee_structure_create' %}" class="btn btn-dark">
+            Add Fee Structure
+        </a>
+
+        <a href="{% url 'invoice_list' %}" class="btn btn-outline-success">
+            View Invoices
+        </a>
+
+        <a href="{% url 'payment_transaction_list' %}" class="btn btn-outline-warning">
+            Online Transactions
+        </a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Timetable System</h3>
+        <p class="text-muted mb-0">Manage class and teacher schedules.</p>
+    </div>
+
+    {% if request.user.is_school_admin %}
+        <div class="page-actions">
+            <a href="{% url 'time_slot_create' %}" class="btn btn-outline-primary">Add Time Slot</a>
+            <a href="{% url 'timetable_entry_create' %}" class="btn btn-primary">Add Timetable Entry</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Active Time Slots</span>
+            <h2>{{ time_slots_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Timetable Entries</span>
+            <h2>{{ entries_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Monday Lessons</span>
+            <h2>{{ monday_count }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% if request.user.is_school_admin %}
+        <div class="col-lg-4">
+            <div class="content-card">
+                <h5 class="fw-bold">Time Slots</h5>
+                <p class="text-muted">Create periods, breaks and school-day schedules.</p>
+                <a href="{% url 'time_slot_list' %}" class="btn btn-outline-primary w-100">Open Time Slots</a>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="content-card">
+                <h5 class="fw-bold">Timetable Entries</h5>
+                <p class="text-muted">Assign classes, subjects and teachers.</p>
+                <a href="{% url 'timetable_entry_list' %}" class="btn btn-outline-primary w-100">Open Entries</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.user.is_teacher %}
+        <div class="col-lg-4">
+            <div class="content-card">
+                <h5 class="fw-bold">My Timetable</h5>
+                <p class="text-muted">View your teaching schedule.</p>
+                <a href="{% url 'my_teacher_timetable' %}" class="btn btn-outline-primary w-100">Open My Timetable</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.user.is_student %}
+        <div class="col-lg-4">
+            <div class="content-card">
+                <h5 class="fw-bold">My Class Timetable</h5>
+                <p class="text-muted">View your class schedule.</p>
+                <a href="{% url 'student_class_timetable' %}" class="btn btn-outline-primary w-100">Open Timetable</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

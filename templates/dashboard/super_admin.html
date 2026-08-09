@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+.saas-hero {
+    background: linear-gradient(135deg, #020617, #1e3a8a, #2563eb);
+    color: #fff;
+    border-radius: 30px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
+}
+
+.saas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+}
+
+.saas-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    transition: 0.25s ease;
+}
+
+.saas-card:hover {
+    transform: translateY(-4px);
+}
+
+.saas-card small {
+    color: #64748b;
+    font-weight: 700;
+}
+
+.saas-card h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-top: 8px;
+}
+
+.saas-section {
+    background: #fff;
+    border-radius: 26px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.saas-row {
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.quick-actions a {
+    border-radius: 16px;
+    padding: 14px;
+    font-weight: 800;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="saas-hero">
+        <h2 class="fw-bold mb-2">Mutafs EduPortal SaaS Headquarters</h2>
+        <p class="mb-0">
+            Global business intelligence, schools, subscriptions, users, revenue and platform activity.
+        </p>
+    </div>
+
+    <div class="saas-grid mb-4">
+        <div class="saas-card">
+            <small>Total Schools</small>
+            <h2>{{ total_schools }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Active Schools</small>
+            <h2 class="text-success">{{ active_schools }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Disabled Schools</small>
+            <h2 class="text-danger">{{ disabled_schools }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Total Users</small>
+            <h2>{{ total_users }}</h2>
+        </div>
+    </div>
+
+    <div class="saas-grid mb-4">
+        <div class="saas-card">
+            <small>Trial Schools</small>
+            <h2 class="text-info">{{ trial_schools }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Suspended</small>
+            <h2 class="text-warning">{{ suspended_subscriptions }}</h2>
+        </div>
+    </div>
+
+    <div class="saas-grid mb-4">
+        <div class="saas-card">
+            <small>SaaS Revenue</small>
+            <h2 class="text-success">₦{{ subscription_revenue }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>School Fees Volume</small>
+            <h2>₦{{ school_fee_volume }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Fees Paid</small>
+            <h2 class="text-success">₦{{ school_fee_paid }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Outstanding Fees</small>
+            <h2 class="text-danger">₦{{ school_fee_balance }}</h2>
+        </div>
+    </div>
+
+    <div class="saas-grid mb-4">
+        <div class="saas-card">
+            <small>Students</small>
+            <h2>{{ students }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Teachers</small>
+            <h2>{{ teachers }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Parents</small>
+            <h2>{{ parents }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>School Admins</small>
+            <h2>{{ school_admins }}</h2>
+        </div>
+    </div>
+
+    <div class="saas-grid mb-4">
+        <div class="saas-card">
+            <small>CBT Exams</small>
+            <h2>{{ cbt_exams }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>CBT Attempts</small>
+            <h2>{{ cbt_attempts }}</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>CBT Average</small>
+            <h2>{{ cbt_average|floatformat:1 }}%</h2>
+        </div>
+
+        <div class="saas-card">
+            <small>Published Results</small>
+            <h2>{{ published_results }}</h2>
+        </div>
+    </div>
+
+    <div class="quick-actions mb-4">
+        <a href="{% url 'school_list' %}" class="btn btn-primary">Manage Schools</a>
+        <a href="{% url 'subscription_dashboard' %}" class="btn btn-success">Subscriptions</a>
+        <a href="{% url 'subscription_plan_list' %}" class="btn btn-primary">Manage Subscription Plans</a>
+        <a href="{% url 'global_analytics_dashboard' %}" class="btn btn-dark">Global Analytics</a>
+        <a href="{% url 'backup_dashboard' %}" class="btn btn-warning">Backups</a>
+        <a href="{% url 'audit_dashboard' %}" class="btn btn-danger">Audit Trail</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="saas-section">
+                <h5 class="fw-bold mb-3">Recent Schools</h5>
+
+                {% for school in recent_schools %}
+                    <div class="saas-row d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ school.name }}</strong><br>
+                            <small class="text-muted">{{ school.created_at|timesince }} ago</small>
+                        </div>
+
+                        {% if school.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Disabled</span>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No schools found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="saas-section">
+                <h5 class="fw-bold mb-3">Subscription Watchlist</h5>
+
+                {% for sub in recent_subscriptions %}
+                    <div class="saas-row d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ sub.school.name }}</strong><br>
+                            <small class="text-muted">
+                                {{ sub.plan.name|default:"No plan" }}
+                                • Ends: {{ sub.end_date|default:"—" }}
+                            </small>
+                        </div>
+
+                        {% if sub.status == "ACTIVE" %}
+                            <span class="badge bg-success">Active</span>
+                        {% elif sub.status == "TRIAL" %}
+                            <span class="badge bg-info">Trial</span>
+                        {% elif sub.status == "EXPIRED" %}
+                            <span class="badge bg-danger">Expired</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ sub.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No subscription records found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="saas-section">
+        <h5 class="fw-bold mb-3">Recent System Activity</h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>School</th>
+                        <th>Actor</th>
+                        <th>Action</th>
+                        <th>Module</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for log in recent_audit_logs %}
+                        <tr>
+                            <td>{{ log.created_at }}</td>
+                            <td>{{ log.school.name|default:"System" }}</td>
+                            <td>{{ log.actor.username|default:"System" }}</td>
+                            <td>{{ log.get_action_display }}</td>
+                            <td>{{ log.module|default:"—" }}</td>
+                            <td>{{ log.description|default:"—" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No recent activity.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

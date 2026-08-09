@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Attendance Dashboard</h3>
+        <p class="text-muted mb-0">Daily attendance control for {{ current_school.name }}.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'student_attendance_select' %}" class="btn btn-primary">Mark Student Attendance</a>
+
+        {% if request.user.is_school_admin %}
+            <a href="{% url 'staff_attendance_select' %}" class="btn btn-outline-primary">Mark Staff Attendance</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Classes Available</span>
+            <h2>{{ classes_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students Present Today</span>
+            <h2>{{ student_present_today }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students Absent Today</span>
+            <h2>{{ student_absent_today }}</h2>
+        </div>
+    </div>
+
+    {% if request.user.is_school_admin %}
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Staff Present Today</span>
+                <h2>{{ staff_present_today }}</h2>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Student Attendance</h5>
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'student_attendance_select' %}" class="btn btn-primary">
+                    Mark Student Attendance
+                </a>
+
+                <a href="{% url 'student_attendance_report' %}" class="btn btn-outline-secondary">
+                    Student Attendance Report
+                </a>
+
+                <a href="{% url 'student_attendance_export_csv' %}" class="btn btn-outline-secondary">
+                    Export Student CSV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_school_admin %}
+        <div class="col-lg-6">
+            <div class="content-card">
+                <h5 class="fw-bold mb-3">Staff Attendance</h5>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'staff_attendance_select' %}" class="btn btn-primary">
+                        Mark Staff Attendance
+                    </a>
+
+                    <a href="{% url 'staff_attendance_report' %}" class="btn btn-outline-secondary">
+                        Staff Attendance Report
+                    </a>
+
+                    <a href="{% url 'staff_attendance_export_csv' %}" class="btn btn-outline-secondary">
+                        Export Staff CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">Upload class learning materials.</p>
+    </div>
+
+    <a href="{% url 'lesson_list' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="content-card">
+        <div class="row g-3">
+            {% for field in form %}
+                <div class="{% if field.name == 'description' %}col-12{% else %}col-md-6{% endif %}">
+                    {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check mt-4">
+                            {{ field }}
+                            <label class="form-check-label">{{ field.label }}</label>
+                        </div>
+                    {% else %}
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-primary px-4">Save Resource</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ student.full_name }}</h3>
+        <p class="text-muted mb-0">Student profile and access details.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'student_update' student.pk %}" class="btn btn-primary">Edit Student</a>
+        <a href="{% url 'student_passkey_card' student.pk %}" class="btn btn-outline-primary">
+            Passkey Card
+        </a>
+        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Admission No</span>
+            <h5>{{ student.admission_number }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Class</span>
+            <h5>{{ student.current_class.name|default:"—" }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Passkey</span>
+            <h5>{{ student.passkey }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Status</span>
+            <h5>{{ student.get_status_display }}</h5>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="content-card text-center">
+            {% if student.passport %}
+                <img src="{{ student.passport.url }}" class="student-photo mb-3" alt="{{ student.full_name }}">
+            {% else %}
+                <div class="student-photo-placeholder mb-3">
+                    {{ student.surname|slice:":1" }}{{ student.first_name|slice:":1" }}
+                </div>
+            {% endif %}
+
+            <h5 class="fw-bold">{{ student.full_name }}</h5>
+            <p class="text-muted mb-0">{{ student.get_gender_display }}</p>
+
+            {% if student.result_qr %}
+                <hr>
+                <img src="{{ student.result_qr.url }}" style="width:120px;height:120px;" alt="Result QR">
+                <p class="small text-muted mt-2">Result Verification QR</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Student Information</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Date of Birth:</strong> {{ student.date_of_birth|default:"—" }}</p>
+                    <p><strong>Admission Date:</strong> {{ student.admission_date }}</p>
+                    <p><strong>Username:</strong> {{ student.user.username }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Guardian:</strong> {{ student.guardian_name|default:"—" }}</p>
+                    <p><strong>Guardian Phone:</strong> {{ student.guardian_phone|default:"—" }}</p>
+                    <p><strong>Guardian Email:</strong> {{ student.guardian_email|default:"—" }}</p>
+                </div>
+
+                <div class="col-12">
+                    <p><strong>Address:</strong> {{ student.address|default:"—" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card mt-4">
+    <h5 class="fw-bold mb-3">Recent Student Audit Logs</h5>
+
+    {% for log in audit_logs %}
+        <div class="activity-item">
+            <strong>{{ log.get_action_display }}</strong>
+            <p class="mb-1">{{ log.description }}</p>
+            <small class="text-muted">{{ log.created_at }} by {{ log.actor|default:"System" }}</small>
+        </div>
+    {% empty %}
+        <p class="text-muted">No audit logs for this student yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

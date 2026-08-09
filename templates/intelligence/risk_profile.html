@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">My Academic Risk Profile</h3>
+            <p class="text-muted mb-0">
+                Personal academic performance and improvement guidance.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h4 class="fw-bold mb-1">{{ student.full_name }}</h4>
+                <p class="text-muted mb-0">
+                    {{ student.current_class.name|default:"No class assigned" }}
+                    • {{ student.admission_number }}
+                </p>
+            </div>
+
+            <div class="text-end">
+                <small class="text-muted">Risk Score</small>
+                <h2 class="fw-bold">{{ risk.score }}/100</h2>
+
+                {% if risk.level == "CRITICAL" %}
+                    <span class="badge bg-danger">{{ risk.label }}</span>
+                {% elif risk.level == "HIGH" %}
+                    <span class="badge bg-warning text-dark">{{ risk.label }}</span>
+                {% elif risk.level == "MEDIUM" %}
+                    <span class="badge bg-primary">{{ risk.label }}</span>
+                {% else %}
+                    <span class="badge bg-success">{{ risk.label }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Average Score</span>
+                <h2>{{ insight.average_score }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Attendance</span>
+                <h2>{{ insight.attendance_percentage }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>CBT Average</span>
+                <h2>{{ insight.cbt_average }}%</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <span>Fee Balance</span>
+                <h2>₦{{ insight.fee_balance }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <h5 class="fw-bold mb-3">Improvement Recommendations</h5>
+
+        {% for item in insight.recommendations %}
+            <div class="alert alert-info rounded-4">
+                {{ item }}
+            </div>
+        {% empty %}
+            <p class="text-muted">No recommendation available yet.</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

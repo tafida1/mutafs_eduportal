@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Class Result Summary</h3>
+        <p class="text-muted mb-0">
+            {{ school_class.name }} — {{ term.get_name_display }} — {{ session.name }}
+        </p>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <span class="badge bg-warning text-dark">
+        Pending: {{ pending_count }}
+    </span>
+
+    <span class="badge bg-success">
+        Approved: {{ approved_count }}
+    </span>
+
+    <span class="badge bg-danger">
+        Correction: {{ rejected_count }}
+    </span>
+
+    <span class="badge bg-primary">
+        Published: {{ published_count }}
+    </span>
+</div>
+
+{% if request.user.is_school_admin %}
+
+    <div class="page-actions">
+
+        <a href="{% url 'print_class_results' session.id term.id school_class.id %}"
+        class="btn btn-primary"
+        target="_blank">
+            Print Class Results
+        </a>
+
+        <a href="{% url 'publish_class_result' session.id term.id school_class.id %}"
+        class="btn btn-success">
+            Publish
+        </a>
+
+        <a href="{% url 'unpublish_class_result' session.id term.id school_class.id %}"
+        class="btn btn-outline-danger">
+            Unpublish
+        </a>
+
+        <a href="{% url 'class_broadsheet' session.id term.id school_class.id %}"
+           class="btn btn-outline-dark"
+           target="_blank">
+            Broadsheet
+        </a>
+
+        <a href="{% url 'approve_class_result' session.id term.id school_class.id %}"
+           class="btn btn-outline-success">
+            Approve
+        </a>
+
+        <button type="button"
+                class="btn btn-outline-warning"
+                onclick="document.getElementById('rejectBox').classList.toggle('d-none')">
+            Reject / Request Correction
+        </button>
+
+    </div>
+
+    <div id="rejectBox" class="content-card mt-3 d-none">
+        <form method="post"
+              action="{% url 'reject_class_result' session.id term.id school_class.id %}">
+            {% csrf_token %}
+
+            <label class="form-label fw-bold">Correction Note</label>
+            <textarea name="rejection_note"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Example: Please recheck Chemistry CA scores."></textarea>
+
+            <button class="btn btn-warning mt-3">
+                Submit Correction Request
+            </button>
+        </form>
+    </div>
+
+{% endif %}
+
+<div class="content-card">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Student</th>
+                <th>Admission No</th>
+                <th>Subjects</th>
+                <th>Total</th>
+                <th>Average</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in student_summaries %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <strong>
+                            {{ item.student__surname }} {{ item.student__first_name }} {{ item.student__middle_name }}
+                        </strong>
+                    </td>
+                    <td><code>{{ item.student__admission_number }}</code></td>
+                    <td>{{ item.subjects_count }}</td>
+                    <td>{{ item.grand_total }}</td>
+                    <td>{{ item.average_score|floatformat:2 }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No result entries found.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

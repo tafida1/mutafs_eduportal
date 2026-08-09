@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Result Management</h3>
+        <p class="text-muted mb-0">Manage academic scores and publishing.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'result_setup' %}" class="btn btn-primary">Enter Results</a>
+
+        {% if request.user.is_school_admin %}
+            <a href="{% url 'grade_scale_list' %}" class="btn btn-outline-primary">Grade Scales</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Total Entries</span><h2>{{ total_entries }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Published</span><h2>{{ published_entries }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Unpublished</span><h2>{{ unpublished_entries }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Grade Scales</span><h2>{{ grade_scales_count }}</h2></div></div>
+</div>
+{% endblock %}

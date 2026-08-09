@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Analytics & Reports</h3>
+        <p class="text-muted mb-0">School performance, finance, attendance and academic insights.</p>
+    </div>
+
+    <button onclick="window.print()" class="btn btn-outline-primary">
+        Print Report
+    </button>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Total Students</span>
+            <h2>{{ total_students }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Active Students</span>
+            <h2>{{ active_students }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Male Students</span>
+            <h2>{{ male_students }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Female Students</span>
+            <h2>{{ female_students }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Total Staff</span>
+            <h2>{{ total_staff }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Teachers</span>
+            <h2>{{ teachers_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Classes</span>
+            <h2>{{ classes_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Subjects</span>
+            <h2>{{ subjects_count }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students Present Today</span>
+            <h2>{{ student_present_today }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students Absent Today</span>
+            <h2>{{ student_absent_today }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Staff Present Today</span>
+            <h2>{{ staff_present_today }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Staff Absent Today</span>
+            <h2>{{ staff_absent_today }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Total Billed</span>
+            <h2>₦{{ total_billed }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Total Paid</span>
+            <h2>₦{{ total_paid }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Outstanding</span>
+            <h2>₦{{ total_balance }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Result Entries</span>
+            <h2>{{ result_entries }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Published Results</span>
+            <h2>{{ published_results }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Average Score</span>
+            <h2>{{ average_result_score|floatformat:1 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>CBT Average</span>
+            <h2>{{ cbt_average_score|floatformat:1 }}%</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Students by Class</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Total Students</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in students_by_class %}
+                            <tr>
+                                <td>{{ item.current_class__name|default:"Unassigned" }}</td>
+                                <td>{{ item.total }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-muted text-center py-4">
+                                    No student data.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Finance Status</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Invoices</th>
+                            <th>Outstanding</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in finance_by_status %}
+                            <tr>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.total }}</td>
+                                <td>₦{{ item.amount|default:"0.00" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-muted text-center py-4">
+                                    No finance data.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Students by Class Chart</h5>
+            <div style="height:350px;">
+                <canvas id="studentsByClassChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Finance Status Chart</h5>
+            <div style="height:300px;">
+                <canvas id="financeStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const classLabels = [
+    {% for item in students_by_class %}
+        "{{ item.current_class__name|default:'Unassigned' }}",
+    {% endfor %}
+];
+
+const classData = [
+    {% for item in students_by_class %}
+        {{ item.total }},
+    {% endfor %}
+];
+
+new Chart(document.getElementById("studentsByClassChart"), {
+    type: "bar",
+    data: {
+        labels: classLabels,
+        datasets: [{
+            label: "Students",
+            data: classData
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+const financeLabels = [
+    {% for item in finance_by_status %}
+        "{{ item.status }}",
+    {% endfor %}
+];
+
+const financeData = [
+    {% for item in finance_by_status %}
+        {{ item.amount|default:0 }},
+    {% endfor %}
+];
+
+new Chart(document.getElementById("financeStatusChart"), {
+    type: "doughnut",
+    data: {
+        labels: financeLabels,
+        datasets: [{
+            label: "Outstanding",
+            data: financeData
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+{% endblock %}

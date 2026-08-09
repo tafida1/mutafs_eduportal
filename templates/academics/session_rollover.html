@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Academic Session Rollover</h3>
+        <p class="text-muted mb-0">
+            Close the current academic session and create a new one.
+        </p>
+    </div>
+
+    <a href="{% url 'academic_session_list' %}" class="btn btn-outline-secondary">
+        Back to Sessions
+    </a>
+</div>
+
+<div class="content-card mb-4">
+    <h5 class="fw-bold">Current Session</h5>
+
+    {% if current_session %}
+        <p><strong>Session:</strong> {{ current_session.name }}</p>
+        <p><strong>Status:</strong>
+            {% if current_session.is_closed %}
+                <span class="badge bg-danger">Closed</span>
+            {% else %}
+                <span class="badge bg-success">Active</span>
+            {% endif %}
+        </p>
+
+        <p><strong>Terms:</strong></p>
+        <ul>
+            {% for term in current_terms %}
+                <li>
+                    {{ term.get_name_display }}
+                    {% if term.is_closed %}
+                        <span class="badge bg-danger">Closed</span>
+                    {% elif term.is_current %}
+                        <span class="badge bg-success">Current</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No current session found.</p>
+    {% endif %}
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">Create New Session</h5>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">New Session Name</label>
+                {{ form.new_session_name }}
+                {{ form.new_session_name.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Start Date</label>
+                {{ form.start_date }}
+                {{ form.start_date.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">End Date</label>
+                {{ form.end_date }}
+                {{ form.end_date.errors }}
+            </div>
+
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    This action will close the current session and its terms.
+                    Published results from the old session will remain visible,
+                    but editing will be blocked.
+                </div>
+
+                <label>
+                    {{ form.confirm_close }}
+                    {{ form.confirm_close.label }}
+                </label>
+                {{ form.confirm_close.errors }}
+            </div>
+        </div>
+
+        <button class="btn btn-danger mt-3"
+                onclick="return confirm('Are you sure you want to close this session and create a new one?')">
+            Close Session & Create New Session
+        </button>
+    </form>
+</div>
+
+{% endblock %}

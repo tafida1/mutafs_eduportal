@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Grade Scales</h3>
+        <p class="text-muted mb-0">Configure automatic grading system.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'seed_default_grade_scales' %}" class="btn btn-outline-primary">Seed Defaults</a>
+        <a href="{% url 'grade_scale_create' %}" class="btn btn-primary">+ Add Grade</a>
+    </div>
+</div>
+
+<div class="content-card">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Grade</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Remark</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for scale in scales %}
+                <tr>
+                    <td><strong>{{ scale.grade }}</strong></td>
+                    <td>{{ scale.min_score }}</td>
+                    <td>{{ scale.max_score }}</td>
+                    <td>{{ scale.remark }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'grade_scale_update' scale.pk %}" class="btn btn-sm btn-light">Edit</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No grade scale yet. Click “Seed Defaults”.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

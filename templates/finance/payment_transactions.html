@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Online Payment Transactions</h3>
+        <p class="text-muted mb-0">
+            Monitor Paystack payment attempts, successful payments and failed transactions.
+        </p>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Student</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Method</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>
+                            <strong>{{ transaction.reference }}</strong>
+                        </td>
+
+                        <td>
+                            {{ transaction.student.full_name }}<br>
+                            <small class="text-muted">
+                                {{ transaction.student.admission_number }}
+                            </small>
+                        </td>
+
+                        <td>₦{{ transaction.amount }}</td>
+
+                        <td>
+                            {% if transaction.status == "SUCCESS" %}
+                                <span class="badge bg-success">Success</span>
+                            {% elif transaction.status == "FAILED" %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ transaction.payment_method }}</td>
+
+                        <td>
+                            {{ transaction.paid_at|default:transaction.created_at }}
+                        </td>
+
+                        <td class="text-end">
+                            {% if transaction.status == "SUCCESS" %}
+                                <a href="{% url 'online_payment_receipt' transaction.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Receipt
+                                </a>
+                            {% else %}
+                                <span class="text-muted small">No receipt</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No online payment transactions yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

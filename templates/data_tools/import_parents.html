@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Import Parents</h3>
+            <p class="text-muted mb-0">Upload parents using the CSV template.</p>
+        </div>
+
+        <a href="{% url 'data_tools_dashboard' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+
+    <div class="content-card">
+        <div class="alert alert-info rounded-4">
+            Required columns:
+            <strong>surname, first_name, phone, child_admission_number</strong>.
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.file }}
+            <button class="btn btn-primary mt-3">Upload & Import</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

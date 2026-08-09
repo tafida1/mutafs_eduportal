@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">Staff/teacher profile for {{ current_school.name }}.</p>
+    </div>
+
+    <a href="{% url 'staff_list' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Login Account</h5>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Temporary Password</label>
+                {{ form.temporary_password }}
+                {{ form.temporary_password.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Staff Information</h5>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Staff Type</label>
+                {{ form.staff_type }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Gender</label>
+                {{ form.gender }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Designation</label>
+                {{ form.designation }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Qualification</label>
+                {{ form.qualification }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Employment Date</label>
+                {{ form.employment_date }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Passport</label>
+                {{ form.passport }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Address</label>
+                {{ form.address }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Teacher Assignment Foundation</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Assigned Classes</label>
+                {{ form.assigned_classes }}
+                <small class="text-muted d-block mt-2">Hold CTRL to select multiple classes.</small>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Assigned Subjects</label>
+                {{ form.assigned_subjects }}
+                <small class="text-muted d-block mt-2">Hold CTRL to select multiple subjects.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary px-4">Save Staff</button>
+        <a href="{% url 'staff_list' %}" class="btn btn-light">Cancel</a>
+    </div>
+</form>
+{% endblock %}

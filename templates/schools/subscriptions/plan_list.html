@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Subscription Plans</h3>
+        <p class="text-muted mb-0">Create commercial SaaS pricing plans.</p>
+    </div>
+
+    <a href="{% url 'subscription_plan_create' %}" class="btn btn-primary">+ Create Plan</a>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Cycle</th>
+                    <th>Price</th>
+                    <th>Students</th>
+                    <th>Staff</th>
+                    <th>Features</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for plan in plans %}
+                    <tr>
+                        <td><strong>{{ plan.name }}</strong></td>
+                        <td>{{ plan.get_billing_cycle_display }}</td>
+                        <td>₦{{ plan.price }}</td>
+                        <td>{{ plan.max_students }}</td>
+                        <td>{{ plan.max_staff }}</td>
+                        <td>
+                            {% if plan.cbt_enabled %}<span class="badge bg-light text-dark border">CBT</span>{% endif %}
+                            {% if plan.finance_enabled %}<span class="badge bg-light text-dark border">Finance</span>{% endif %}
+                            {% if plan.parent_portal_enabled %}<span class="badge bg-light text-dark border">Parents</span>{% endif %}
+                            {% if plan.result_checker_enabled %}<span class="badge bg-light text-dark border">Results</span>{% endif %}
+                        </td>
+                        <td>
+                            {% if plan.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'subscription_plan_update' plan.pk %}" class="btn btn-sm btn-light">Edit</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No plans created.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

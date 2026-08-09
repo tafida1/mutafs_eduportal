@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <div>
+        <h3 class="fw-bold mb-1">Class Broadsheet</h3>
+        <p class="text-muted mb-0">
+            {{ school_class.name }} — {{ term.get_name_display }} — {{ session.name }}
+        </p>
+    </div>
+
+    <button onclick="window.print()" class="btn btn-primary">
+        Print Broadsheet
+    </button>
+</div>
+
+<div class="row g-4 mb-4 no-print">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students</span>
+            <h2>{{ students_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Average Total</span>
+            <h2>{{ class_average|floatformat:2 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Highest Average</span>
+            <h2>{{ highest_average|floatformat:2 }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Lowest Average</span>
+            <h2>{{ lowest_average|floatformat:2 }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="content-card broadsheet-card">
+
+    <div class="text-center mb-4">
+        {% if school.logo %}
+            <img src="{{ school.logo.url }}"
+                 style="height:70px; object-fit:contain;"
+                 class="mb-2">
+        {% endif %}
+
+        <h3 class="fw-bold mb-1">{{ school.name }}</h3>
+        <p class="mb-1">Class Broadsheet</p>
+        <p class="text-muted">
+            {{ school_class.name }} — {{ term.get_name_display }} — {{ session.name }}
+        </p>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle broadsheet-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Student</th>
+                    <th>Admission No</th>
+
+                    {% for subject in subjects %}
+                        <th>{{ subject.name }}</th>
+                    {% endfor %}
+
+                    <th>Total</th>
+                    <th>Average</th>
+                    <th>Failed</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in broadsheet_rows %}
+                    <tr>
+                        <td><strong>{{ row.position }}</strong></td>
+
+                        <td>
+                            <strong>{{ row.student.full_name }}</strong>
+                        </td>
+
+                        <td>
+                            <code>{{ row.student.admission_number }}</code>
+                        </td>
+
+                        {% for item in row.subject_results %}
+                            <td>
+                                {% if item.score %}
+                                    {{ item.score }}
+                                    <br>
+                                    <small>{{ item.grade }}</small>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+
+                        <td><strong>{{ row.total }}</strong></td>
+                        <td>{{ row.average|floatformat:2 }}</td>
+                        <td>
+                            {% if row.failed_subjects > 0 %}
+                                <span class="badge bg-danger">
+                                    {{ row.failed_subjects }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">0</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="20" class="text-center text-muted py-4">
+                            No result data found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.broadsheet-table {
+    font-size: 12px;
+}
+
+.broadsheet-table th {
+    background: #f3f4f6;
+    white-space: nowrap;
+}
+
+.broadsheet-table td {
+    white-space: nowrap;
+}
+
+@media print {
+    .sidebar,
+    .navbar,
+    .no-print,
+    .page-actions,
+    button {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .content-wrapper,
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .content-card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .broadsheet-table {
+        font-size: 10px;
+    }
+
+    @page {
+        size: landscape;
+        margin: 10mm;
+    }
+}
+</style>
+
+{% endblock %}

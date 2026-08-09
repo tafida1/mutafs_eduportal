@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cbt-exam.css' %}">
+{% endblock %}
+
+{% block body_class %}cbt-mode{% endblock %}
+
+{% block content %}
+
+<div class="cbt-shell">
+
+    <div class="cbt-topbar">
+        <div class="cbt-topbar-inner">
+            <div>
+                <div class="cbt-exam-title">
+                    {{ attempt.exam.title }}
+                </div>
+                <small>
+                    {{ attempt.student.full_name }}
+                </small>
+            </div>
+            <div>
+                <div id="cbt-timer"
+                     class="cbt-timer"
+                     data-remaining="{{ remaining_seconds }}">
+                    00:00:00
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cbt-main">
+        <div class="cbt-layout">
+
+            <div class="cbt-question-card">
+
+                <div class="cbt-question-number">
+                    Question {{ current_number }} of {{ total_questions }}
+                </div>
+
+                <div class="cbt-question-text">
+                    {{ question.question_text|safe }}
+                </div>
+
+                {% if question.diagram %}
+                    <div class="mb-4">
+                        <img src="{{ question.diagram.url }}" class="img-fluid rounded">
+                    </div>
+                {% endif %}
+
+                {% if question.question_image %}
+                    <div class="mb-4">
+                        <img src="{{ question.question_image.url }}" class="img-fluid rounded">
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                <div class="cbt-options-grid">
+                    <!-- Option A -->
+                    <label class="cbt-option {% if selected_option == 'A' %}selected{% endif %}">
+                        <input type="radio" name="answer" value="A" {% if selected_option == 'A' %}checked{% endif %}>
+                        <strong>A.</strong>
+                        <span>{{ question.option_a|safe }}</span>
+                    </label>
+
+                    <!-- Option B -->
+                    <label class="cbt-option {% if selected_option == 'B' %}selected{% endif %}">
+                        <input type="radio" name="answer" value="B" {% if selected_option == 'B' %}checked{% endif %}>
+                        <strong>B.</strong>
+                        <span>{{ question.option_b|safe }}</span>
+                    </label>
+
+                    <!-- Option C -->
+                    <label class="cbt-option {% if selected_option == 'C' %}selected{% endif %}">
+                        <input type="radio" name="answer" value="C" {% if selected_option == 'C' %}checked{% endif %}>
+                        <strong>C.</strong>
+                        <span>{{ question.option_c|safe }}</span>
+                    </label>
+
+                    <!-- Option D -->
+                    <label class="cbt-option {% if selected_option == 'D' %}selected{% endif %}">
+                        <input type="radio" name="answer" value="D" {% if selected_option == 'D' %}checked{% endif %}>
+                        <strong>D.</strong>
+                        <span>{{ question.option_d|safe }}</span>
+                    </label>
+                </div>
+
+                    <div class="cbt-controls">
+
+                        {% if previous_question %}
+                            <a href="{% url 'take_exam' attempt.id %}?q={{ previous_question }}"
+                            class="cbt-btn cbt-btn-secondary text-decoration-none">
+                                Previous
+                            </a>
+                        {% endif %}
+
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                    name="review"
+                                    value="1"
+                                    class="cbt-btn cbt-btn-secondary">
+                                Mark for Review
+                            </button>
+                            <button type="submit"
+                                    class="cbt-btn cbt-btn-primary">
+                                Save & Next
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="cbt-sidebar">
+
+                <div class="fw-bold mb-3">Question Palette</div>
+
+                <div class="cbt-palette">
+                    {% for item in question_palette %}
+                        <a href="{% url 'take_exam' attempt.id %}?q={{ item.number }}"
+                           class="palette-btn text-decoration-none text-center
+                           {% if item.is_answered %}answered{% endif %}
+                           {% if item.is_review %}review{% endif %}
+                           {% if item.number == current_number %}current{% endif %}">
+                            {{ item.number }}
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <div class="cbt-submit-box">
+                    <div class="cbt-warning mb-3">
+                        Ensure all questions are answered before submission.
+                    </div>
+                    <form id="cbt-submit-form"
+                          method="post"
+                          action="{% url 'take_exam' attempt.id %}?submit=1">
+                        {% csrf_token %}
+                        <button class="cbt-btn cbt-btn-danger w-100">
+                            Submit Examination
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cbt-exam.js' %}"></script>
+{% endblock %}

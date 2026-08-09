@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ school_class.name }} Timetable</h3>
+        <p class="text-muted mb-0">Weekly class schedule.</p>
+    </div>
+
+    <div class="page-actions">
+        <button onclick="window.print()" class="btn btn-primary">Print</button>
+        <a href="{% url 'timetable_dashboard' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="content-card">
+    {% for day_value, day_label in days %}
+        <div class="timetable-day-block">
+            <h5 class="fw-bold">{{ day_label }}</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                            <th>Room</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for entry in entries %}
+                            {% if entry.time_slot.day == day_value %}
+                                <tr>
+                                    <td>{{ entry.time_slot.start_time }} - {{ entry.time_slot.end_time }}</td>
+                                    <td>{{ entry.subject.name|default:"—" }}</td>
+                                    <td>{{ entry.teacher.full_name|default:"—" }}</td>
+                                    <td>{{ entry.room|default:"—" }}</td>
+                                    <td>{{ entry.note|default:"—" }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

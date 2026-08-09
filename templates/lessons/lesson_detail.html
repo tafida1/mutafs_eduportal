@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ resource.title }}</h3>
+        <p class="text-muted mb-0">
+            {{ resource.school_class.name }} — {{ resource.subject.name }}
+        </p>
+    </div>
+
+    <div class="page-actions">
+        {% if request.user.is_school_admin or request.user.is_teacher %}
+            <a href="{% url 'lesson_update' resource.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'lesson_toggle_publish' resource.pk %}" class="btn btn-outline-secondary">
+                {% if resource.is_published %}Unpublish{% else %}Publish{% endif %}
+            </a>
+        {% endif %}
+
+        <a href="{% url 'lesson_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Resource Information</h5>
+
+            <p><strong>Type:</strong> {{ resource.get_resource_type_display }}</p>
+            <p><strong>Session:</strong> {{ resource.session.name }}</p>
+            <p><strong>Term:</strong> {{ resource.term.get_name_display }}</p>
+            <p><strong>Uploaded By:</strong> {{ resource.uploaded_by|default:"—" }}</p>
+            <p><strong>Description:</strong></p>
+            <p>{{ resource.description|default:"No description provided." }}</p>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Open / Download</h5>
+
+            {% if resource.file %}
+                <a href="{{ resource.file.url }}" target="_blank" class="btn btn-primary w-100 mb-2">
+                    Open File
+                </a>
+
+                <a href="{{ resource.file.url }}" download class="btn btn-outline-primary w-100 mb-2">
+                    Download File
+                </a>
+            {% endif %}
+
+            {% if resource.external_link %}
+                <a href="{{ resource.external_link }}" target="_blank" class="btn btn-outline-secondary w-100">
+                    Open External Link
+                </a>
+            {% endif %}
+
+            {% if not resource.file and not resource.external_link %}
+                <p class="text-muted mb-0">No file or external link attached.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

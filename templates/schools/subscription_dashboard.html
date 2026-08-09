@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">SaaS Subscription Dashboard</h3>
+        <p class="text-muted mb-0">
+            Manage your school subscription plan and billing.
+        </p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Subscription Status</span>
+            <h2>{{ school.subscription_status }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Expiry Date</span>
+            <h2>{{ school.subscription_end_date|default:"N/A" }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <span>Current Plan</span>
+            <h2>
+                {% if subscription and subscription.plan %}
+                    {{ subscription.plan.name }}
+                {% else %}
+                    No Plan
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    {% for plan in plans %}
+        <div class="col-lg-4">
+            <div class="content-card h-100 {% if subscription and subscription.plan_id == plan.id %}border border-primary{% endif %}">
+
+                {% if subscription and subscription.plan_id == plan.id %}
+                    <div class="badge bg-primary mb-2">Current Plan</div>
+                {% endif %}
+
+                <h5 class="fw-bold mb-2">
+                    {{ plan.name }}
+                </h5>
+
+                <p class="text-muted">
+                    {{ plan.description|default:"School SaaS subscription plan." }}
+                </p>
+
+                <h2 class="fw-bold text-primary mb-3">
+                    ₦{{ plan.price }}
+                </h2>
+
+                <p class="small text-muted mb-3">
+                    Billing Cycle: {{ plan.get_billing_cycle_display }}
+                </p>
+
+                <ul class="small text-muted mb-4">
+                    <li>Max Students: {{ plan.max_students }}</li>
+                    <li>Max Staff: {{ plan.max_staff }}</li>
+
+                    {% if plan.cbt_enabled %}
+                        <li>CBT Enabled</li>
+                    {% endif %}
+
+                    {% if plan.finance_enabled %}
+                        <li>Finance Enabled</li>
+                    {% endif %}
+
+                    {% if plan.parent_portal_enabled %}
+                        <li>Parent Portal Enabled</li>
+                    {% endif %}
+
+                    {% if plan.result_checker_enabled %}
+                        <li>Result Checker Enabled</li>
+                    {% endif %}
+                </ul>
+
+                <a href="{% url 'initialize_subscription_payment' %}?plan={{ plan.id }}"
+                   class="btn btn-primary w-100">
+                    Subscribe
+                </a>
+
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="content-card text-center py-5">
+                <h5 class="fw-bold">No subscription plans available</h5>
+                <p class="text-muted mb-0">
+                    Please contact Mutafs Global Technology support.
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+<div class="content-card mt-4">
+
+    <h5 class="fw-bold mb-3">Subscription Payment History</h5>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Date</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.reference }}</td>
+
+                        <td>
+                            {% if payment.subscription.plan %}
+                                {{ payment.subscription.plan.name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>₦{{ payment.amount }}</td>
+                        <td>{{ payment.get_payment_method_display }}</td>
+                        <td>{{ payment.payment_date }}</td>
+                        <td>{{ payment.note|linebreaksbr }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No subscription payments yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

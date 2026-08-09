@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">CBT Result</h3>
+        <p class="text-muted mb-0">{{ attempt.exam.title }}</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Score</span><h2>{{ attempt.score }}</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Percentage</span><h2>{{ attempt.percentage|floatformat:2 }}%</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Pass Mark</span><h2>{{ attempt.exam.pass_mark }}%</h2></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Status</span><h5>{% if attempt.passed %}Passed{% else %}Failed{% endif %}</h5></div></div>
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">Answers Review</h5>
+
+    {% for item in attempt_questions %}
+        <div class="border rounded-3 p-3 mb-3">
+            <p><strong>Q{{ forloop.counter }}:</strong> {{ item.question.question_text|safe }}</p>
+            <p class="mb-1"><strong>Your Answer:</strong> {{ item.selected_option|default:"Not answered" }}</p>
+            <p class="mb-1"><strong>Correct Answer:</strong> {{ item.question.correct_option }}</p>
+
+            {% if item.is_correct %}
+                <span class="badge bg-success">Correct</span>
+            {% else %}
+                <span class="badge bg-danger">Wrong</span>
+            {% endif %}
+
+            {% if item.question.explanation %}
+                <p class="text-muted mt-2 mb-0">{{ item.question.explanation|safe }}</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p class="text-muted">No answer records found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ parent.full_name }}</h3>
+        <p class="text-muted mb-0">Parent/Guardian profile and linked children.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'parent_update' parent.pk %}" class="btn btn-primary">Edit Parent</a>
+
+        <a href="{% url 'parent_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Relationship</span>
+            <h5>{{ parent.get_relationship_display }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Phone</span>
+            <h5>{{ parent.phone }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Children</span>
+            <h5>{{ parent.children.count }}</h5>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Status</span>
+            <h5>{% if parent.is_active %}Active{% else %}Inactive{% endif %}</h5>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Parent Information</h5>
+
+            <p><strong>Username:</strong> {{ parent.user.username }}</p>
+            <p><strong>Email:</strong> {{ parent.user.email|default:"—" }}</p>
+            <p><strong>Alternate Phone:</strong> {{ parent.alternate_phone|default:"—" }}</p>
+            <p><strong>Occupation:</strong> {{ parent.occupation|default:"—" }}</p>
+            <p><strong>Address:</strong> {{ parent.address|default:"—" }}</p>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="content-card">
+            <h5 class="fw-bold mb-3">Linked Children</h5>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Admission No</th>
+                            <th>Class</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for child in parent.children.all %}
+                            <tr>
+                                <td><strong>{{ child.full_name }}</strong></td>
+                                <td><code>{{ child.admission_number }}</code></td>
+                                <td>{{ child.current_class.name|default:"—" }}</td>
+                                <td>{{ child.get_status_display }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-muted">No child linked yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-card mt-4">
+    <h5 class="fw-bold mb-3">Recent Parent Audit Logs</h5>
+
+    {% for log in audit_logs %}
+        <div class="activity-item">
+            <strong>{{ log.get_action_display }}</strong>
+            <p class="mb-1">{{ log.description }}</p>
+            <small class="text-muted">{{ log.created_at }} by {{ log.actor|default:"System" }}</small>
+        </div>
+    {% empty %}
+        <p class="text-muted">No audit logs for this parent yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

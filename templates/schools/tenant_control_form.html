@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Manage Tenant</h3>
+        <p class="text-muted mb-0">
+            {{ school.name }}
+        </p>
+    </div>
+
+    <a href="{% url 'tenant_control_center' %}"
+       class="btn btn-outline-secondary">
+        Back
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Students</span>
+            <h2>{{ students_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Staff</span>
+            <h2>{{ staff_count }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Subscription</span>
+            <h2>{{ school.subscription_status }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>Days Left</span>
+            <h2>{{ school.days_remaining|default:"—" }}</h2>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Domain Settings</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Custom Domain</label>
+                {{ form.custom_domain }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Subdomain</label>
+                {{ form.subdomain }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Feature Access</h5>
+
+        <div class="row g-3">
+            {% for field in form %}
+                {% if field.field.widget.input_type == "checkbox" %}
+                    <div class="col-md-3">
+                        <label class="form-check">
+                            {{ field }}
+                            <span class="form-check-label">{{ field.label }}</span>
+                        </label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Maintenance</h5>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Maintenance Message</label>
+            {{ form.maintenance_message }}
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Storage Limit</h5>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Storage Limit MB</label>
+            {{ form.storage_limit_mb }}
+        </div>
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    <button class="btn btn-primary">
+        Save Tenant Settings
+    </button>
+
+</form>
+
+{% endblock %}

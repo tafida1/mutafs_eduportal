@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Smart Promotion Wizard</h3>
+        <p class="text-muted mb-0">
+            Preview and apply end-of-session promotions based on result intelligence.
+        </p>
+    </div>
+
+    <a href="{% url 'student_class_movement' %}" class="btn btn-outline-secondary">
+        Class Movement
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Promotion Setup</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Source Class</label>
+                {{ form.source_class }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Destination Class</label>
+                {{ form.destination_class }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Session</label>
+                {{ form.session }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Term</label>
+                {{ form.term }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Minimum Average for Promotion</label>
+                {{ form.min_average_for_promotion }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Maximum Failed Subjects</label>
+                {{ form.max_failed_subjects }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Reason / Note</label>
+                {{ form.reason }}
+            </div>
+        </div>
+    </div>
+
+    <button name="action" value="preview" class="btn btn-primary px-4">
+        Preview Promotion
+    </button>
+
+    {% if preview %}
+        <button name="action" value="confirm"
+                class="btn btn-success px-4"
+                onclick="return confirm('Are you sure you want to apply this promotion? This will update students current classes.')">
+            Confirm & Apply Promotion
+        </button>
+    {% endif %}
+</form>
+
+{% if preview %}
+    <div class="content-card mt-4">
+        <h5 class="fw-bold mb-3">Promotion Preview</h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Admission No</th>
+                        <th>Subjects</th>
+                        <th>Total</th>
+                        <th>Average</th>
+                        <th>Failed</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in preview %}
+                        <tr>
+                            <td>{{ item.student.full_name }}</td>
+                            <td><code>{{ item.student.admission_number }}</code></td>
+                            <td>{{ item.subject_count }}</td>
+                            <td>{{ item.total }}</td>
+                            <td>{{ item.average|floatformat:2 }}</td>
+                            <td>{{ item.failed_subjects }}</td>
+                            <td>
+                                {% if item.recommendation == "PROMOTE" %}
+                                    <span class="badge bg-success">Promote</span>
+                                {% elif item.recommendation == "PROBATION" %}
+                                    <span class="badge bg-warning text-dark">Promote on Probation</span>
+                                {% elif item.recommendation == "NO_RESULT" %}
+                                    <span class="badge bg-secondary">No Result</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Repeat</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

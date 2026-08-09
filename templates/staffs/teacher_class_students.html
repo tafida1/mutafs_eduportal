@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ school_class.name }} Students</h3>
+        <p class="text-muted mb-0">Active students in your assigned class.</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'teacher_my_classes' %}" class="btn btn-outline-secondary">Back</a>
+        <a href="{% url 'student_attendance_select' %}" class="btn btn-primary">Mark Attendance</a>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Admission No</th>
+                    <th>Gender</th>
+                    <th>Guardian Phone</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>
+                            <strong>{{ student.full_name }}</strong>
+                        </td>
+
+                        <td><code>{{ student.admission_number }}</code></td>
+
+                        <td>{{ student.get_gender_display }}</td>
+
+                        <td>{{ student.guardian_phone|default:"—" }}</td>
+
+                        <td>
+                            <span class="badge bg-success">{{ student.get_status_display }}</span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No active students found in this class.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

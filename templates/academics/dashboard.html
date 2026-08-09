@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Academic Foundation</h3>
+        <p class="text-muted mb-0">Setup sessions, terms, classes and subjects.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <a href="{% url 'academic_session_list' %}" class="text-decoration-none">
+            <div class="stat-card">
+                <span>Sessions</span>
+                <h2>{{ sessions_count }}</h2>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'academic_term_list' %}" class="text-decoration-none">
+            <div class="stat-card">
+                <span>Terms</span>
+                <h2>{{ terms_count }}</h2>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'academic_class_list' %}" class="text-decoration-none">
+            <div class="stat-card">
+                <span>Classes</span>
+                <h2>{{ classes_count }}</h2>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'academic_subject_list' %}" class="text-decoration-none">
+            <div class="stat-card">
+                <span>Subjects</span>
+                <h2>{{ subjects_count }}</h2>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">Recommended Setup Order</h5>
+
+    <ol class="mb-0">
+        <li>Create academic session, for example <strong>2025/2026</strong>.</li>
+        <li>Create terms under the session.</li>
+        <li>Create classes and arms, for example <strong>JSS 1A</strong>.</li>
+        <li>Create subjects, for example <strong>Mathematics</strong>.</li>
+    </ol>
+</div>
+{% endblock %}

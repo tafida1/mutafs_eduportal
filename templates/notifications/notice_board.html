@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Notice Board</h3>
+            <p class="text-muted mb-0">Official school announcements and broadcasts.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for announcement in announcements %}
+            <div class="col-lg-6">
+                <div class="content-card h-100">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold mb-0">
+                            {% if announcement.is_pinned %}📌{% endif %}
+                            {{ announcement.title }}
+                        </h5>
+
+                        {% if announcement.priority == "URGENT" %}
+                            <span class="badge bg-danger">Urgent</span>
+                        {% elif announcement.priority == "HIGH" %}
+                            <span class="badge bg-warning text-dark">High</span>
+                        {% elif announcement.priority == "LOW" %}
+                            <span class="badge bg-secondary">Low</span>
+                        {% else %}
+                            <span class="badge bg-primary">Normal</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-muted">
+                        {{ announcement.message|linebreaks }}
+                    </div>
+
+                    {% if announcement.attachment %}
+                        <a href="{{ announcement.attachment.url }}"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary mt-2">
+                            View Attachment
+                        </a>
+                    {% endif %}
+
+                    <div class="small text-muted mt-3">
+                        Posted {{ announcement.created_at|timesince }} ago
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="content-card text-center py-5">
+                    <h5 class="fw-bold">No announcements</h5>
+                    <p class="text-muted mb-0">
+                        No active notice is available at the moment.
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,443 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About | Mutafs EduPortal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --blue:   #2563eb;
+            --indigo: #6366f1;
+            --green:  #22c55e;
+            --amber:  #f59e0b;
+            --glass:  rgba(255,255,255,0.07);
+            --border: rgba(255,255,255,0.12);
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background: #020617;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* ── Background mesh ── */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 20%, rgba(37,99,235,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 80%, rgba(99,102,241,0.14) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(15,23,42,0.8) 0%, transparent 100%);
+        }
+
+        /* subtle grid overlay */
+        .bg-mesh::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        /* ── Page wrapper ── */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 13.5px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            transition: color .2s, background .2s, border-color .2s;
+            margin-bottom: 48px;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            background: rgba(37,99,235,0.25);
+            border-color: rgba(37,99,235,0.5);
+        }
+
+        /* ── Hero ── */
+        .hero {
+            text-align: center;
+            margin-bottom: 64px;
+            animation: fadeUp .7s ease both;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: rgba(37,99,235,0.15);
+            border: 1px solid rgba(37,99,235,0.35);
+            color: #93c5fd;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .hero-badge span {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #60a5fa;
+            box-shadow: 0 0 8px #60a5fa;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 6vw, 64px);
+            font-weight: 900;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            max-width: 580px;
+            margin: 0 auto;
+            font-size: 17px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        /* ── Section title ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        /* ── About card ── */
+        .about-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            backdrop-filter: blur(16px);
+            margin-bottom: 48px;
+            animation: fadeUp .7s .1s ease both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--indigo));
+            border-radius: 28px 28px 0 0;
+        }
+
+        .about-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .about-card p {
+            font-size: 15.5px;
+            color: #94a3b8;
+            line-height: 1.85;
+        }
+
+        .about-card p + p { margin-top: 14px; }
+
+        .about-card strong { color: #e2e8f0; font-weight: 600; }
+
+        /* ── Feature grid ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-bottom: 48px;
+        }
+
+        .feat-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 28px;
+            backdrop-filter: blur(12px);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s;
+            animation: fadeUp .7s ease both;
+        }
+
+        .feat-card:nth-child(1) { animation-delay: .15s; }
+        .feat-card:nth-child(2) { animation-delay: .22s; }
+        .feat-card:nth-child(3) { animation-delay: .29s; }
+        .feat-card:nth-child(4) { animation-delay: .36s; }
+        .feat-card:nth-child(5) { animation-delay: .43s; }
+        .feat-card:nth-child(6) { animation-delay: .50s; }
+
+        .feat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+            border-color: rgba(96,165,250,0.3);
+        }
+
+        .feat-icon {
+            width: 44px; height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+
+        .feat-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .feat-card p {
+            font-size: 13.5px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+
+        /* ── Stat row ── */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 56px;
+            animation: fadeUp .7s .4s ease both;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 24px 16px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .stat-item .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-item .lbl {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── CTA ── */
+        .cta-band {
+            text-align: center;
+            padding: 48px 32px;
+            background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(99,102,241,0.14));
+            border: 1px solid rgba(99,102,241,0.25);
+            border-radius: 28px;
+            animation: fadeUp .7s .5s ease both;
+        }
+
+        .cta-band h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .cta-band p {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--blue), var(--indigo));
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 6px 20px rgba(37,99,235,0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(37,99,235,0.50);
+            color: #fff;
+        }
+
+        /* ── Animation ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .page { padding: 32px 16px 60px; }
+            .about-card { padding: 28px 22px; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="page">
+
+    <a href="{% url 'login' %}" class="back-link">← Back to Login</a>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-badge"><span></span> Est. 2024 · Nigeria</div>
+        <h1>About <em>Mutafs</em><br>EduPortal</h1>
+        <p>
+            A modern, cloud-based school management system built to simplify academic
+            operations, improve transparency, and connect schools, teachers, students, and parents.
+        </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row">
+        <div class="stat-item">
+            <div class="num">100%</div>
+            <div class="lbl">Cloud-Based</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">∞</div>
+            <div class="lbl">Schools Supported</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">5+</div>
+            <div class="lbl">User Roles</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">24/7</div>
+            <div class="lbl">Availability</div>
+        </div>
+    </div>
+
+    <!-- About body -->
+    <div class="about-card">
+        <p class="section-label">Who We Are</p>
+        <h2>Built for Modern Nigerian Schools</h2>
+        <p>
+            <strong>EduPortal</strong> by <strong>Mutafs Global Technologies</strong> is a purpose-built platform
+            designed to digitise every layer of school administration — from student enrolment and
+            academic sessions to result computation, fee management, and parent communication.
+        </p>
+        <p>
+            We believe every school, regardless of size, deserves enterprise-grade tools that are
+            affordable, easy to use, and built for the African context. Our platform is hosted securely,
+            updated continuously, and backed by a team that understands school operations firsthand.
+        </p>
+        <p>
+            From result management and student records to lesson notes, CBT examinations, and deep
+            analytics — EduPortal provides a complete digital solution that grows with your institution.
+        </p>
+    </div>
+
+    <!-- Features -->
+    <p class="section-label" style="text-align:center; margin-bottom: 28px;">What We Offer</p>
+    <div class="features-grid">
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(37,99,235,0.15);">📊</div>
+            <h3>Smart Results</h3>
+            <p>Automated grading, class ranking, and result publication with secure student and parent access portals.</p>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(34,197,94,0.15);">🏫</div>
+            <h3>Multi-School SaaS</h3>
+            <p>Manage multiple schools from a single super-admin platform with full isolation and control.</p>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(99,102,241,0.15);">🔐</div>
+            <h3>Role-Based Access</h3>
+            <p>Dedicated portals for admins, teachers, students, and parents — each with appropriate permissions.</p>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(245,158,11,0.15);">💳</div>
+            <h3>Online Payments</h3>
+            <p>Integrated Paystack payments for school fees, with automatic invoice reconciliation and receipts.</p>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(239,68,68,0.15);">📝</div>
+            <h3>CBT Examinations</h3>
+            <p>Computer-based testing with randomised questions, time limits, and instant automatic scoring.</p>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon" style="background:rgba(20,184,166,0.15);">📈</div>
+            <h3>Analytics & Insights</h3>
+            <p>Real-time dashboards for school performance, attendance trends, and financial summaries.</p>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-band">
+        <h2>Ready to Transform Your School?</h2>
+        <p>Get in touch and we'll have your school onboarded in no time.</p>
+        <a href="{% url 'public_contact' %}" class="btn-primary">Contact Us →</a>
+    </div>
+
+</div>
+</body>
+</html>

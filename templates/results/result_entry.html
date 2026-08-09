@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Enter Results</h3>
+        <p class="text-muted mb-0">
+            {{ school_class.name }} — {{ subject.name }} — {{ term.get_name_display }} — {{ session.name }}
+        </p>
+    </div>
+
+    <a href="{% url 'result_setup' %}" class="btn btn-outline-secondary">Change Setup</a>
+    <a href="{% url 'result_class_summary' session.id term.id school_class.id %}"
+    class="btn btn-primary">
+        View Class Summary
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if existing_results %}
+        <div class="alert alert-warning mb-3">
+            Existing results loaded. You can edit and resave them.
+        </div>
+    {% else %}
+        <div class="alert alert-info mb-3">
+            Enter scores for students.
+        </div>
+    {% endif %}
+
+    {% for item in students_data %}
+        {% if item.result_entry and item.result_entry.approval_status == "REJECTED" %}
+            <div class="alert alert-danger">
+                Correction required: {{ item.result_entry.rejection_note }}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="content-card">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Admission No</th>
+                        <th>CA / 30</th>
+                        <th>Exam / 70</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in students_data %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.student.full_name }}</strong>
+                            </td>
+
+                            <td>
+                                <code>{{ item.student.admission_number }}</code>
+                            </td>
+
+                            <td>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="30"
+                                    step="0.01"
+                                    name="ca_{{ item.student.id }}"
+                                    class="form-control"
+                                    value="{{ item.ca_score }}"
+                                >
+                            </td>
+
+                            <td>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="70"
+                                    step="0.01"
+                                    name="exam_{{ item.student.id }}"
+                                    class="form-control"
+                                    value="{{ item.exam_score }}"
+                                >
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">
+                                No active students found in this class.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if students_data %}
+            <button class="btn btn-primary px-4">Save Results</button>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

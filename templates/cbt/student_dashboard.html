@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="fw-bold mb-4">My CBT Exams</h3>
+
+<div class="content-card mb-4">
+    <h5 class="fw-bold mb-3">Available Exams</h5>
+
+    <div class="row g-4">
+        {% for exam in available_exams %}
+            <div class="col-md-6 col-lg-4">
+                <div class="child-card">
+                    <h5 class="fw-bold">{{ exam.title }}</h5>
+                    <p class="mb-1"><strong>Subject:</strong> {{ exam.subject.name }}</p>
+                    <p class="mb-1"><strong>Duration:</strong> {{ exam.duration_minutes }} minutes</p>
+                    <p class="mb-3"><strong>Questions:</strong> {{ exam.total_questions }}</p>
+
+                    <a href="{% url 'start_exam' exam.pk %}" class="btn btn-primary w-100">
+                        Start Exam
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No available CBT exam.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">My CBT Attempts</h5>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Exam</th>
+                    <th>Subject</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for attempt in attempts %}
+                    <tr>
+                        <td>{{ attempt.exam.title }}</td>
+                        <td>{{ attempt.exam.subject.name }}</td>
+                        <td>{{ attempt.score }}</td>
+                        <td>{{ attempt.percentage|floatformat:2 }}%</td>
+                        <td>{{ attempt.get_status_display }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'cbt_attempt_result' attempt.pk %}" class="btn btn-sm btn-light">View</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No attempts yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

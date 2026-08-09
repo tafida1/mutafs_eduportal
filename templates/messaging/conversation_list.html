@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold">Messages</h3>
+            <p class="text-muted mb-0">Internal communication center</p>
+        </div>
+
+        <a href="{% url 'start_conversation' %}" class="btn btn-primary">
+            + New Message
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            {% for item in conversation_data %}
+                <a href="{% url 'conversation_detail' item.conversation.id %}"
+                   class="text-decoration-none text-dark">
+
+                    <div class="border rounded-4 p-3 mb-3 d-flex justify-content-between align-items-center
+                        {% if item.unread_count > 0 %}bg-light{% endif %}">
+
+                        <div>
+                            <div class="fw-bold">
+                                {{ item.conversation.title|default:"Direct Conversation" }}
+
+                                {% if item.unread_count > 0 %}
+                                    <span class="badge bg-danger ms-2">
+                                        {{ item.unread_count }} unread
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <small class="text-muted">
+                                {% if item.last_message %}
+                                    {{ item.last_message.body|truncatechars:80 }}
+                                {% else %}
+                                    No messages yet.
+                                {% endif %}
+                            </small>
+                        </div>
+
+                        <span class="badge bg-primary">Open</span>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="text-center py-5">
+                    <h5 class="fw-bold">No conversations yet</h5>
+                    <p class="text-muted">Start your first message with another user.</p>
+
+                    <a href="{% url 'start_conversation' %}" class="btn btn-primary">
+                        Start New Message
+                    </a>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

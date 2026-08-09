@@ -1,0 +1,250 @@
+body.cbt-mode {
+    background: #f1f5f9;
+    overflow-x: hidden;
+}
+
+.cbt-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.cbt-topbar {
+    background: #0f172a;
+    color: white;
+    padding: 14px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    border-bottom: 4px solid #2563eb;
+}
+
+.cbt-topbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.cbt-exam-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.cbt-timer {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #facc15;
+}
+
+.cbt-main {
+    flex: 1;
+    padding: 20px;
+}
+
+.cbt-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+}
+
+.cbt-question-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+.cbt-question-number {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 14px;
+}
+
+.cbt-question-text {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    margin-bottom: 28px;
+}
+
+.cbt-option {
+    border: 2px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.cbt-option:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.cbt-option.selected {
+    border-color: #2563eb;
+    background: #dbeafe;
+}
+
+.cbt-option input {
+    margin-right: 10px;
+}
+
+.cbt-sidebar {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+    height: fit-content;
+    position: sticky;
+    top: 95px;
+}
+
+.cbt-palette {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.palette-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    background: #f1f5f9;
+}
+
+.palette-btn.answered {
+    background: #16a34a;
+    color: white;
+}
+
+.palette-btn.current {
+    background: #2563eb;
+    color: white;
+}
+
+.palette-btn.review {
+    background: #f59e0b;
+    color: white;
+}
+
+.cbt-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.cbt-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 22px;
+    font-weight: 700;
+}
+
+.cbt-btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.cbt-btn-secondary {
+    background: #e2e8f0;
+}
+
+.cbt-btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.cbt-submit-box {
+    margin-top: 30px;
+}
+
+.cbt-warning {
+    background: #fef3c7;
+    border-left: 5px solid #f59e0b;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 992px) {
+    .cbt-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cbt-sidebar {
+        position: relative;
+        top: unset;
+    }
+}
+
+@media (max-width: 576px) {
+    .cbt-question-card,
+    .cbt-sidebar {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .cbt-option {
+        padding: 14px;
+    }
+
+    .palette-btn {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+
+/* JAMB-style option layout fix */
+.cbt-options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    max-width: 760px;
+}
+
+.cbt-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 58px;
+    border: 2px solid #dbe4f0;
+    border-radius: 14px;
+    padding: 14px 18px;
+    background: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.cbt-option strong {
+    min-width: 32px;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.cbt-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.cbt-option.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+@media (min-width: 900px) {
+    .cbt-options-grid.two-column-options {
+        grid-template-columns: 1fr 1fr;
+    }
+}

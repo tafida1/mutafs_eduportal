@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">
+            {% if school_class %}
+                {{ school_class.name }}
+            {% else %}
+                {{ current_school.name }}
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="page-actions">
+        <button onclick="window.print()" class="btn btn-primary">Print Cards</button>
+        <a href="{% url 'student_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="passkey-sheet">
+    {% for student in students %}
+        <div class="mini-passkey-card">
+            <div class="mini-card-top">
+                {% if current_school.logo %}
+                    <img src="{{ current_school.logo.url }}" alt="Logo">
+                {% endif %}
+                <div>
+                    <strong>{{ current_school.name }}</strong>
+                    <small>Result Access Card</small>
+                </div>
+            </div>
+
+            <h6>{{ student.full_name }}</h6>
+
+            <p><strong>Class:</strong> {{ student.current_class.name|default:"—" }}</p>
+            <p><strong>Surname:</strong> {{ student.surname }}</p>
+            <p><strong>Passkey:</strong> <span>{{ student.passkey }}</span></p>
+            <p>
+                <strong>Portal:</strong>
+                {{ request.scheme }}://{{ request.get_host }}{% url 'public_result_checker' %}
+            </p>
+
+            <div class="mini-card-bottom">
+                {% if student.result_qr %}
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ request.scheme }}://{{ request.get_host }}{% url 'public_result_checker' %}" alt="QR">
+                {% endif %}
+                <small>Powered by Mutafs Global Technology</small>
+            </div>
+        </div>
+    {% empty %}
+        <div class="content-card">
+            <p class="text-muted mb-0">No active students found.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+.admin-hero {
+    background: linear-gradient(135deg, #0f172a, #1d4ed8);
+    color: white;
+    border-radius: 28px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.25);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.admin-card {
+    background: white;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+    border: 1px solid #e5e7eb;
+    transition: 0.25s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-4px);
+}
+
+.admin-card small {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.admin-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.admin-section {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.quick-actions a {
+    border-radius: 16px;
+    font-weight: 700;
+    padding: 14px;
+}
+
+.mini-row {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="admin-hero">
+        <h2 class="fw-bold mb-2">{{ request.user.school.name }} Command Center</h2>
+        <p class="mb-0">
+            {{ current_session|default:"No current session" }}
+            •
+            {{ current_term|default:"No current term" }}
+        </p>
+    </div>
+
+    <div class="admin-grid mb-4">
+        <div class="admin-card">
+            <small>Total Students</small>
+            <h2>{{ students_count }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Active Students</small>
+            <h2>{{ active_students_count }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Teachers</small>
+            <h2>{{ teachers_count }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Parents</small>
+            <h2>{{ parents_count }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Classes</small>
+            <h2>{{ classes_count }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Subjects</small>
+            <h2>{{ subjects_count }}</h2>
+        </div>
+    </div>
+
+    <div class="admin-grid mb-4">
+        <div class="admin-card">
+            <small>Students Present Today</small>
+            <h2 class="text-success">{{ student_present_today }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Students Absent Today</small>
+            <h2 class="text-danger">{{ student_absent_today }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Total Paid</small>
+            <h2 class="text-success">₦{{ total_paid }}</h2>
+        </div>
+
+        <div class="admin-card">
+            <small>Outstanding Fees</small>
+            <h2 class="text-danger">₦{{ total_balance }}</h2>
+        </div>
+    </div>
+
+    <div class="quick-actions mb-4">
+        <a href="{% url 'student_create' %}" class="btn btn-primary">Add Student</a>
+        <a href="{% url 'staff_create' %}" class="btn btn-dark">Add Staff</a>
+        <a href="{% url 'result_dashboard' %}" class="btn btn-success">Manage Results</a>
+        <a href="{% url 'attendance_dashboard' %}" class="btn btn-warning">Attendance</a>
+        <a href="{% url 'cbt_dashboard' %}" class="btn btn-info">CBT Exams</a>
+        <a href="{% url 'finance_dashboard' %}" class="btn btn-danger">Finance</a>
+        <a href="{% url 'academic_risk_dashboard' %}" class="btn btn-dark">Academic Risk</a>
+        <a href="{% url 'teacher_ai_assistant' %}" class="btn btn-secondary">AI Assistant</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="admin-section">
+                <h5 class="fw-bold mb-3">Class Population</h5>
+
+                {% for item in class_cards %}
+                    <div class="mini-row d-flex justify-content-between align-items-center">
+                        <strong>{{ item.class.name }}</strong>
+                        <span class="badge bg-primary">{{ item.students_count }} Students</span>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No classes found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="admin-section">
+                <h5 class="fw-bold mb-3">CBT & Results</h5>
+
+                <div class="mini-row d-flex justify-content-between">
+                    <span>CBT Exams</span>
+                    <strong>{{ cbt_exams_count }}</strong>
+                </div>
+
+                <div class="mini-row d-flex justify-content-between">
+                    <span>CBT Attempts</span>
+                    <strong>{{ cbt_attempts_count }}</strong>
+                </div>
+
+                <div class="mini-row d-flex justify-content-between">
+                    <span>CBT Average</span>
+                    <strong>{{ cbt_average|floatformat:1 }}%</strong>
+                </div>
+
+                <div class="mini-row d-flex justify-content-between">
+                    <span>Published Results</span>
+                    <strong>{{ published_results_count }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="admin-section">
+                <h5 class="fw-bold mb-3">Recent Results</h5>
+
+                {% for result in recent_results %}
+                    <div class="mini-row">
+                        <strong>{{ result.student.full_name }}</strong><br>
+                        <small>{{ result.subject.name }} — {{ result.total_score }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No result activity yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="admin-section">
+                <h5 class="fw-bold mb-3">Recent Resources</h5>
+
+                {% for resource in recent_resources %}
+                    <div class="mini-row">
+                        <strong>{{ resource.title }}</strong><br>
+                        <small>{{ resource.subject.name }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No recent resources.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="admin-section">
+                <h5 class="fw-bold mb-3">Announcements</h5>
+
+                {% for announcement in recent_announcements %}
+                    <div class="mini-row">
+                        <strong>{{ announcement.title }}</strong><br>
+                        <small>{{ announcement.created_at|timesince }} ago</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No announcements.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

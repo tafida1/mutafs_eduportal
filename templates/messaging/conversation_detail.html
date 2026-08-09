@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="card border-0 shadow rounded-4">
+
+        <div class="card-header bg-dark text-white rounded-top-4">
+            <h5 class="mb-0">
+                {{ conversation.title|default:"Conversation" }}
+            </h5>
+        </div>
+
+        <div class="card-body"
+             style="height:500px; overflow-y:auto; background:#f8fafc;">
+
+            {% for message in messages %}
+
+                <div class="mb-3">
+
+                    <div class="
+                        p-3
+                        rounded-4
+                        {% if message.sender == request.user %}
+                            bg-primary text-white ms-auto
+                        {% else %}
+                            bg-white border
+                        {% endif %}
+                    "
+                    style="max-width:75%;">
+
+                        <div class="fw-bold mb-1">
+                            {{ message.sender.get_full_name }}
+                        </div>
+
+                        <div>
+                            {{ message.body|linebreaks }}
+                        </div>
+
+                        {% if message.attachment %}
+                            <div class="mt-2">
+                                <a href="{{ message.attachment.url }}"
+                                   target="_blank">
+                                    Attachment
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <small class="d-block mt-2 opacity-75">
+                            {{ message.created_at }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="card-footer">
+
+            <form method="post"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {{ form.body }}
+
+                <div class="mt-2">
+                    {{ form.attachment }}
+                </div>
+
+                <button class="btn btn-primary mt-3">
+                    Send Message
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

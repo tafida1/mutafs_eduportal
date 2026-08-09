@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">
+            Configure SaaS billing price, duration and feature access.
+        </p>
+    </div>
+
+    <a href="{% url 'subscription_plan_list' %}" class="btn btn-outline-secondary">
+        Back
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Plan Information</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Plan Name</label>
+                {{ form.name }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Billing Cycle</label>
+                {{ form.billing_cycle }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Price</label>
+                {{ form.price }}
+            </div>
+
+            <div class="col-12">
+                <label class="form-label fw-bold">Description</label>
+                {{ form.description }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Usage Limits</h5>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Maximum Students</label>
+                {{ form.max_students }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Maximum Staff</label>
+                {{ form.max_staff }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Included Features</h5>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-check">
+                    {{ form.cbt_enabled }}
+                    <span class="form-check-label">CBT Enabled</span>
+                </label>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-check">
+                    {{ form.finance_enabled }}
+                    <span class="form-check-label">Finance Enabled</span>
+                </label>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-check">
+                    {{ form.parent_portal_enabled }}
+                    <span class="form-check-label">Parent Portal</span>
+                </label>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-check">
+                    {{ form.result_checker_enabled }}
+                    <span class="form-check-label">Result Checker</span>
+                </label>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-check">
+                    {{ form.is_active }}
+                    <span class="form-check-label">Plan Active</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    <button class="btn btn-primary">
+        Save Plan
+    </button>
+
+</form>
+
+{% endblock %}

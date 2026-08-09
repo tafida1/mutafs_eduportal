@@ -1,0 +1,145 @@
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">M</div>
+        <div>
+            <strong>Mutafs</strong>
+            <small>EduPortal SaaS</small>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard_router' %}">Dashboard</a>
+
+        {% if request.user.is_authenticated and request.user.is_super_admin %}
+            <div class="sidebar-section">Platform</div>
+            <a href="{% url 'school_list' %}">Schools</a>
+            <a href="{% url 'tenant_control_center' %}">Tenant Control</a>
+            <a href="{% url 'global_analytics_dashboard' %}">Global Analytics</a>
+
+            <div class="sidebar-section">Subscriptions</div>
+            <a href="{% url 'subscription_dashboard' %}">Subscriptions</a>
+            <a href="{% url 'subscription_plan_list' %}">Subscription Plans</a>
+
+            <div class="sidebar-section">System</div>
+            <a href="{% url 'backup_dashboard' %}">Backups</a>
+            <a href="{% url 'audit_dashboard' %}">Audit Trail</a>
+        {% endif %}
+
+        {% if request.user.is_authenticated and request.user.is_school_admin %}
+            <div class="sidebar-section">Academics</div>
+            <a href="{% url 'academics_dashboard' %}">Academic Dashboard</a>
+            <a href="{% url 'academic_session_list' %}">Sessions</a>
+            <a href="{% url 'academic_term_list' %}">Terms</a>
+            <a href="{% url 'academic_class_list' %}">Classes</a>
+            <a href="{% url 'academic_subject_list' %}">Subjects</a>
+            <a href="{% url 'student_class_movement' %}">Class Movement</a>
+            <a href="{% url 'smart_promotion_wizard' %}">Promotion Wizard</a>
+
+            <div class="sidebar-section">People</div>
+            <a href="{% url 'student_list' %}">Students</a>
+            <a href="{% url 'staff_list' %}">Staff / Teachers</a>
+            <a href="{% url 'parent_list' %}">Parents</a>
+
+            <div class="sidebar-section">Learning</div>
+            <a href="{% url 'lesson_dashboard' %}">Lesson Resources</a>
+            <a href="{% url 'timetable_dashboard' %}">Timetable</a>
+            <a href="{% url 'cbt_dashboard' %}">CBT Exams</a>
+
+            <div class="sidebar-section">Results & Attendance</div>
+            <a href="{% url 'result_dashboard' %}">Results</a>
+            <a href="{% url 'attendance_dashboard' %}">Attendance</a>
+            <a href="{% url 'academic_risk_dashboard' %}">Academic Risk</a>
+
+            <div class="sidebar-section">Finance</div>
+            <a href="{% url 'finance_dashboard' %}">Finance</a>
+            <a href="{% url 'invoice_list' %}">Invoices</a>
+            <a href="{% url 'payment_transaction_list' %}">Online Transactions</a>
+
+            <div class="sidebar-section">Communication</div>
+            <a href="{% url 'announcement_list' %}">Announcements</a>
+
+            <div class="sidebar-section">School Settings</div>
+            <a href="{% url 'analytics_dashboard' %}">Analytics</a>
+            <a href="{% url 'data_tools_dashboard' %}">Import / Export</a>
+            <a href="{% url 'audit_dashboard' %}">Audit Trail</a>
+            <a href="{% url 'school_branding_settings' %}">School Branding</a>
+            <a href="{% url 'subscription_dashboard' %}">SaaS Subscription</a>
+            <a href="{% url 'subscription_plan_list' %}">Subscription Plans</a>
+
+            <div class="sidebar-section">AI Tools</div>
+            <a href="{% url 'teacher_ai_assistant' %}">AI Teacher Assistant</a>
+        {% endif %}
+
+        {% if request.user.is_authenticated and request.user.is_teacher %}
+            <div class="sidebar-section">Teaching</div>
+            <a href="{% url 'teacher_workspace' %}">My Workspace</a>
+            <a href="{% url 'teacher_my_classes' %}">My Classes</a>
+            <a href="{% url 'teacher_my_subjects' %}">My Subjects</a>
+            <a href="{% url 'result_setup' %}">Enter Scores</a>
+            <a href="{% url 'lesson_dashboard' %}">Lesson Notes</a>
+            <a href="{% url 'my_teacher_timetable' %}">My Timetable</a>
+            <a href="{% url 'attendance_dashboard' %}">Attendance</a>
+            <a href="{% url 'cbt_dashboard' %}">CBT Exams</a>
+
+            <div class="sidebar-section">AI & Risk</div>
+            <a href="{% url 'teacher_ai_assistant' %}">AI Teacher Assistant</a>
+            <a href="{% url 'academic_risk_dashboard' %}">Academic Risk</a>
+        {% endif %}
+
+        {% if request.user.is_authenticated and request.user.is_student %}
+            <div class="sidebar-section">My School</div>
+            <a href="{% url 'lesson_list' %}">Lesson Notes</a>
+            <a href="{% url 'student_class_timetable' %}">Timetable</a>
+            <a href="{% url 'student_cbt_dashboard' %}">CBT Exams</a>
+            <a href="{% url 'student_result_portal' %}">My Results</a>
+            <a href="{% url 'student_attendance_portal' %}">My Attendance</a>
+
+            <div class="sidebar-section">Finance</div>
+            <a href="{% url 'student_invoice_list' %}">My Fees</a>
+            <a href="{% url 'my_payment_transactions' %}">Payment History</a>
+
+            <div class="sidebar-section">AI Insight</div>
+            <a href="{% url 'my_academic_insight' %}">AI Academic Insight</a>
+            <a href="{% url 'my_risk_profile' %}">My Risk Profile</a>
+        {% endif %}
+
+        {% if request.user.is_authenticated and request.user.is_parent %}
+            <div class="sidebar-section">My Children</div>
+            <a href="{% url 'parent_portal_dashboard' %}">Children Dashboard</a>
+            <a href="{% url 'parent_result_portal' %}">Children Results</a>
+            <a href="{% url 'parent_attendance_portal' %}">Children Attendance</a>
+
+            <div class="sidebar-section">Finance</div>
+            <a href="{% url 'parent_invoice_list' %}">Children Fees</a>
+            <a href="{% url 'my_payment_transactions' %}">Payment History</a>
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+            <div class="sidebar-section">Account</div>
+
+            <a href="{% url 'notification_list' %}">
+                Notifications
+                {% if global_unread_notifications_count > 0 %}
+                    <span class="badge bg-danger">{{ global_unread_notifications_count }}</span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'notice_board' %}">Notice Board</a>
+
+            <a href="{% url 'conversation_list' %}">
+                Messages
+                {% if global_unread_messages_count > 0 %}
+                    <span class="badge bg-danger">{{ global_unread_messages_count }}</span>
+                {% endif %}
+            </a>
+
+            <a href="{% url 'my_profile' %}">My Profile</a>
+            <a href="{% url 'change_password' %}">Change Password</a>
+
+            <form method="post" action="{% url 'logout' %}" style="margin-top: 8px;">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-logout-btn">Logout</button>
+            </form>
+        {% endif %}
+    </nav>
+</aside>

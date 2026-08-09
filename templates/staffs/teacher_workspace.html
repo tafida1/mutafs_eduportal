@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+
+<style>
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+    transition: 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.section-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+}
+
+.quick-btn {
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold">
+            Welcome,
+            {{ teacher.user.get_full_name }}
+            👨‍🏫
+        </h2>
+
+        <p class="text-muted">
+            Enterprise Teacher Workspace
+        </p>
+
+    </div>
+
+    <!-- Analytics -->
+
+    <div class="dashboard-grid mb-4">
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Assigned Classes
+            </small>
+
+            <div class="stat-number text-primary">
+                {{ assigned_classes }}
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Assigned Subjects
+            </small>
+
+            <div class="stat-number text-success">
+                {{ assigned_subjects }}
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Students
+            </small>
+
+            <div class="stat-number text-info">
+                {{ total_students }}
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <small class="text-muted">
+                Results Entered
+            </small>
+
+            <div class="stat-number text-danger">
+                {{ total_results }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    My Classes
+                </h6>
+
+                <a href="{% url 'teacher_my_classes' %}"
+                   class="btn btn-primary w-100 quick-btn">
+
+                    Open Classes
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    Attendance
+                </h6>
+
+                <a href="{% url 'attendance_dashboard' %}"
+                   class="btn btn-success w-100 quick-btn">
+
+                    Manage Attendance
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    Enter Results
+                </h6>
+
+                <a href="{% url 'result_dashboard' %}"
+                   class="btn btn-info w-100 quick-btn">
+
+                    Enter Scores
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    Lesson Notes
+                </h6>
+
+                <a href="{% url 'lesson_dashboard' %}"
+                   class="btn btn-dark w-100 quick-btn">
+
+                    Open Notes
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    Academic Risk
+                </h6>
+
+                <a href="{% url 'academic_risk_dashboard' %}"
+                   class="btn btn-danger w-100 quick-btn">
+
+                    View Risk Students
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="section-card text-center">
+
+                <h6 class="fw-bold mb-3">
+                    AI Assistant
+                </h6>
+
+                <a href="{% url 'teacher_ai_assistant' %}"
+                   class="btn btn-dark w-100 quick-btn">
+
+                    Open AI Assistant
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Timetable + Notifications -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-6">
+
+            <div class="section-card">
+
+                <h5 class="fw-bold mb-3">
+                    Today's Timetable
+                </h5>
+
+                {% for item in today_timetable %}
+
+                    <div class="border rounded-4 p-3 mb-3">
+
+                        <strong>
+                            {{ item.subject.name }}
+                        </strong>
+
+                        <div class="small text-muted">
+                            {{ item.school_class.name }}
+                        </div>
+
+                        <div class="small">
+                            {{ item.time_slot.start_time }}
+                            -
+                            {{ item.time_slot.end_time }}
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="text-muted">
+                        No timetable for today.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="section-card">
+
+                <h5 class="fw-bold mb-3">
+                    Notifications
+                </h5>
+
+                {% for item in recent_notifications %}
+
+                    <div class="border rounded-4 p-3 mb-3">
+
+                        <strong>
+                            {{ item.announcement.title }}
+                        </strong>
+
+                        <div class="small text-muted">
+                            {{ item.created_at|timesince }} ago
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="text-muted">
+                        No notifications available.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Resources -->
+
+    <div class="section-card mt-4">
+
+        <h5 class="fw-bold mb-3">
+            Recently Uploaded Lesson Resources
+        </h5>
+
+        <div class="row">
+
+            {% for resource in recent_resources %}
+
+                <div class="col-md-4 mb-3">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <strong>
+                            {{ resource.title }}
+                        </strong>
+
+                        <div class="small text-muted mb-2">
+                            {{ resource.subject.name }}
+                        </div>
+
+                        <a href="{{ resource.file.url }}"
+                           target="_blank"
+                           class="btn btn-sm btn-primary rounded-pill">
+
+                            Open Resource
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p class="text-muted">
+                    No resources uploaded yet.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h3 class="fw-bold mb-1">
+            Children Results
+        </h3>
+
+        <p class="text-muted mb-0">
+            Academic performance for linked children.
+        </p>
+    </div>
+
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Admission No</th>
+                    <th>Session</th>
+                    <th>Term</th>
+                    <th>Subjects</th>
+                    <th>Average</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in term_results %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {{ item.student__surname }}
+                                {{ item.student__first_name }}
+                                {{ item.student__middle_name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            <code>{{ item.student__admission_number }}</code>
+                        </td>
+
+                        <td>{{ item.session__name }}</td>
+                        <td>{{ item.term__name }}</td>
+                        <td>{{ item.subjects_count }}</td>
+                        <td>{{ item.average|floatformat:2 }}</td>
+
+                        <td class="text-end">
+                            <a href="{% url 'student_term_result' item.student item.session item.term %}"
+                               class="btn btn-sm btn-primary">
+                                View / Print Result
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No results available.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

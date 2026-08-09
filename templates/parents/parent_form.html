@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ title }}</h3>
+        <p class="text-muted mb-0">Parent/Guardian profile for {{ current_school.name }}.</p>
+    </div>
+
+    <a href="{% url 'parent_list' %}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Login Account</h5>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Temporary Password</label>
+                {{ form.temporary_password }}
+                {{ form.temporary_password.errors }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Parent Information</h5>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Relationship</label>
+                {{ form.relationship }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Alternate Phone</label>
+                {{ form.alternate_phone }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Occupation</label>
+                {{ form.occupation }}
+            </div>
+
+            <div class="col-md-6 form-check mt-4">
+                {{ form.is_active }}
+                <label class="form-check-label">Active Account</label>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Address</label>
+                {{ form.address }}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mb-4">
+        <h5 class="fw-bold mb-3">Linked Children</h5>
+
+        <label class="form-label">Select one or more children</label>
+        {{ form.children }}
+        {{ form.children.errors }}
+
+        <small class="text-muted d-block mt-2">
+            Hold CTRL on Windows to select multiple children.
+        </small>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary px-4">Save Parent</button>
+        <a href="{% url 'parent_list' %}" class="btn btn-light">Cancel</a>
+    </div>
+</form>
+{% endblock %}

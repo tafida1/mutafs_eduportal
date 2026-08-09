@@ -1,0 +1,186 @@
+<div class="result-sheet">
+
+    {% if school.logo %}
+        <div class="result-watermark">
+            <img src="{{ school.logo.url }}" alt="Watermark">
+        </div>
+    {% endif %}
+
+    <div class="result-header">
+        {% if school.logo %}
+            <img src="{{ school.logo.url }}" class="school-logo" alt="School Logo">
+        {% endif %}
+
+        <div>
+            <h2>{{ school.name }}</h2>
+            <p>{{ school.address|default:"" }}</p>
+            <h5>Student Academic Result Sheet</h5>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="student-info-grid">
+        <div>
+            <p><strong>Name:</strong> {{ student.full_name }}</p>
+            <p><strong>Admission No:</strong> {{ student.admission_number }}</p>
+            <p><strong>Gender:</strong> {{ student.get_gender_display }}</p>
+            <p><strong>Class:</strong> {{ student.current_class.name|default:"—" }}</p>
+        </div>
+
+        <div>
+            <p><strong>Session:</strong> {{ session.name }}</p>
+            <p><strong>Term:</strong> {{ term.get_name_display }}</p>
+            <p><strong>Total:</strong> {{ total }}</p>
+            <p><strong>Average:</strong> {{ average|floatformat:2 }}</p>
+        </div>
+
+        <div class="student-photo-box">
+            {% if student.passport %}
+                <img src="{{ student.passport.url }}" alt="{{ student.full_name }}">
+            {% else %}
+                <div class="photo-placeholder">No Photo</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if intelligence_entry %}
+        <div class="row g-3 mb-3">
+            <div class="col-md-3">
+                <div class="border rounded p-2">
+                    <small class="text-muted">Class Position</small>
+                    <div class="fw-bold">{{ class_position|default:intelligence_entry.class_position|default:"—" }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded p-2">
+                    <small class="text-muted">Academic Remark</small>
+                    <div class="fw-bold">{{ intelligence_entry.get_academic_remark_display }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded p-2">
+                    <small class="text-muted">Promotion Status</small>
+                    <div class="fw-bold">{{ intelligence_entry.get_promotion_status_display }}</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded p-2">
+                    <small class="text-muted">Auto Comment</small>
+                    <div class="fw-bold small">{{ intelligence_entry.auto_comment }}</div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if attendance_summary %}
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="border p-2 rounded small">
+                    <strong>Days School Opened</strong><br>
+                    {{ attendance_summary.total_days }}
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border p-2 rounded small">
+                    <strong>Days Present</strong><br>
+                    {{ attendance_summary.present_days }}
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border p-2 rounded small">
+                    <strong>Days Absent</strong><br>
+                    {{ attendance_summary.absent_days }}
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border p-2 rounded small">
+                    <strong>Attendance %</strong><br>
+                    {{ attendance_summary.attendance_percentage }}%
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="border rounded p-2 small">
+                <strong>Attendance Remark:</strong>
+                {{ attendance_summary.attendance_remark }}
+            </div>
+        </div>
+    {% endif %}
+
+    <table class="table table-bordered result-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>CA</th>
+                <th>Exam</th>
+                <th>Total</th>
+                <th>Grade</th>
+                <th>Remark</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.subject.name }}</td>
+                    <td>{{ entry.ca_score }}</td>
+                    <td>{{ entry.exam_score }}</td>
+                    <td>{{ entry.total_score }}</td>
+                    <td>{{ entry.grade }}</td>
+                    <td>{{ entry.remark }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">
+                        No result entries available.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="result-bottom-grid">
+        <div class="result-bottom-box">
+            <p><strong>Teacher's Comment:</strong></p>
+            <div class="comment-box">
+                {{ intelligence_entry.teacher_comment|default:"" }}
+            </div>
+            <div class="signature-line"></div>
+            <p class="signature-label">Class Teacher</p>
+        </div>
+
+        <div class="result-bottom-box principal-comment-box">
+            <p><strong>Principal/Admin Comment:</strong></p>
+            <div class="comment-box">
+                {{ intelligence_entry.principal_comment|default:"" }}
+
+                {% if school.result_stamp %}
+                    <img src="{{ school.result_stamp.url }}"
+                         class="result-stamp"
+                         alt="Official Stamp">
+                {% endif %}
+            </div>
+            <div class="signature-line"></div>
+            <p class="signature-label">Principal / Head Teacher</p>
+        </div>
+
+        {% if intelligence_entry and intelligence_entry.verification_token %}
+            <div class="qr-box">
+                <img
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ request.scheme }}://{{ request.get_host }}{% url 'verify_result' intelligence_entry.verification_token %}"
+                    alt="Result QR"
+                >
+                <p>Scan to verify result</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>

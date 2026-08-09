@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">Lesson Resources</h3>
+        <p class="text-muted mb-0">View learning resources for {{ current_school.name }}.</p>
+    </div>
+
+    {% if request.user.is_school_admin or request.user.is_teacher %}
+        <a href="{% url 'lesson_create' %}" class="btn btn-primary">+ Upload Resource</a>
+    {% endif %}
+</div>
+
+<div class="filter-card">
+    <form method="get" class="row g-3">
+        <div class="col-md-3">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search title, subject, class...">
+        </div>
+
+        <div class="col-md-3">
+            <select name="class" class="form-select">
+                <option value="">All Classes</option>
+                {% for class in classes %}
+                    <option value="{{ class.id }}" {% if class_id == class.id|stringformat:"s" %}selected{% endif %}>
+                        {{ class.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="subject" class="form-select">
+                <option value="">All Subjects</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}" {% if subject_id == subject.id|stringformat:"s" %}selected{% endif %}>
+                        {{ subject.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="type" class="form-select">
+                <option value="">All Types</option>
+                {% for value,label in resource_types %}
+                    <option value="{{ value }}" {% if resource_type == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-1 d-grid">
+            <button class="btn btn-dark">Go</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-4">
+    {% for resource in resources %}
+        <div class="col-md-6 col-lg-4">
+            <div class="content-card h-100">
+                <span class="badge bg-light text-dark border mb-2">
+                    {{ resource.get_resource_type_display }}
+                </span>
+
+                {% if resource.is_published %}
+                    <span class="badge bg-success mb-2">Published</span>
+                {% else %}
+                    <span class="badge bg-secondary mb-2">Draft</span>
+                {% endif %}
+
+                <h5 class="fw-bold">{{ resource.title }}</h5>
+
+                <p class="text-muted mb-1">
+                    {{ resource.school_class.name }} — {{ resource.subject.name }}
+                </p>
+
+                <p class="small text-muted">
+                    {{ resource.term.get_name_display }} — {{ resource.session.name }}
+                </p>
+
+                <p>{{ resource.description|truncatechars:100 }}</p>
+
+                <a href="{% url 'lesson_detail' resource.pk %}" class="btn btn-outline-primary w-100">
+                    Open Resource
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="content-card text-center text-muted">
+                No lesson resource found.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

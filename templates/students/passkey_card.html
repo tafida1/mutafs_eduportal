@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <div>
+        <h3 class="fw-bold mb-1">Student Passkey Card</h3>
+        <p class="text-muted mb-0">{{ student.full_name }}</p>
+    </div>
+
+    <div class="page-actions">
+        <button onclick="window.print()" class="btn btn-primary">Print Card</button>
+        <a href="{% url 'student_detail' student.pk %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="passkey-single-wrapper">
+    <div class="passkey-card">
+        <div class="passkey-header">
+            {% if current_school.logo %}
+                <img src="{{ current_school.logo.url }}" alt="Logo">
+            {% endif %}
+            <div>
+                <h4>{{ current_school.name }}</h4>
+                <p>Result Access Card</p>
+            </div>
+        </div>
+
+        <div class="passkey-body">
+            <h5>{{ student.full_name }}</h5>
+            <p><strong>Class:</strong> {{ student.current_class.name|default:"—" }}</p>
+            <p><strong>Surname:</strong> {{ student.surname }}</p>
+            <p><strong>Passkey:</strong> <span class="passkey-code">{{ student.passkey }}</span></p>
+            <p>
+                <strong>Portal:</strong>
+                {{ request.scheme }}://{{ request.get_host }}{% url 'public_result_checker' %}
+            </p>
+        </div>
+
+        <div class="passkey-footer">
+            {% if student.result_qr %}
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ request.scheme }}://{{ request.get_host }}{% url 'public_result_checker' %}" alt="QR">
+            {% endif %}
+            <small>Scan QR to verify published result</small>
+        </div>
+    </div>
+</div>
+{% endblock %}

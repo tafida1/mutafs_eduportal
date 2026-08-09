@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{{ exam.title }}</h3>
+        <p class="text-muted mb-0">{{ exam.school_class.name }} — {{ exam.subject.name }}</p>
+    </div>
+
+    <div class="page-actions">
+        <a href="{% url 'cbt_exam_update' exam.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'cbt_exam_toggle_status' exam.pk %}" class="btn {% if exam.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+            {% if exam.is_active %}Deactivate{% else %}Activate{% endif %}
+        </a>
+        <a href="{% url 'cbt_exam_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Duration</span><h5>{{ exam.duration_minutes }} mins</h5></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Total Questions</span><h5>{{ exam.total_questions }}</h5></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Pass Mark</span><h5>{{ exam.pass_mark }}%</h5></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Status</span><h5>{% if exam.is_active %}Active{% else %}Inactive{% endif %}</h5></div></div>
+</div>
+
+<div class="content-card mb-4">
+    <h5 class="fw-bold mb-3">Questions</h5>
+    <p class="text-muted">{{ exam.questions.count }} questions assigned.</p>
+</div>
+
+<div class="content-card">
+    <h5 class="fw-bold mb-3">Recent Attempts</h5>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for attempt in attempts %}
+                    <tr>
+                        <td>{{ attempt.student.full_name }}</td>
+                        <td>{{ attempt.score }}</td>
+                        <td>{{ attempt.percentage|floatformat:2 }}%</td>
+                        <td>{{ attempt.get_status_display }}</td>
+                        <td>{{ attempt.submitted_at|default:"—" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'cbt_attempt_result' attempt.pk %}" class="btn btn-sm btn-light">View</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No attempts yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

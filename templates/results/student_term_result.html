@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <div>
+        <h3 class="fw-bold mb-1">{{ student.full_name }}</h3>
+        <p class="text-muted mb-0">
+            {{ term.get_name_display }} — {{ session.name }}
+        </p>
+    </div>
+
+    <button onclick="window.print()" class="btn btn-primary">
+        Print Result
+    </button>
+</div>
+
+<div class="print-page">
+    {% include "results/partials/result_sheet.html" with school=current_school student=student entries=entries total=total average=average session=session term=term intelligence_entry=intelligence_entry attendance_summary=attendance_summary class_position=class_position %}
+</div>
+
+<style>
+.result-sheet {
+    position: relative;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+
+.result-watermark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.06;
+    z-index: 0;
+}
+
+.result-watermark img {
+    width: 420px;
+    max-width: 70%;
+}
+
+.result-sheet > *:not(.result-watermark) {
+    position: relative;
+    z-index: 1;
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.school-logo {
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+}
+
+.result-header h2 {
+    font-weight: 800;
+    margin: 0;
+}
+
+.student-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 130px;
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.student-photo-box img,
+.photo-placeholder {
+    width: 120px;
+    height: 130px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+}
+
+.result-table th {
+    background: #f3f4f6;
+}
+
+.result-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.comment-line {
+    height: 55px;
+    border-bottom: 1px solid #999;
+}
+
+.signature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 45px;
+    text-align: center;
+}
+
+.signature-line {
+    border-bottom: 1px solid #111;
+    height: 35px;
+}
+
+.qr-box {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.qr-box img {
+    width: 95px;
+    height: 95px;
+}
+
+.qr-box p {
+    font-size: 12px;
+    color: #666;
+}
+
+.comment-box {
+    min-height: 65px;
+    border-bottom: 1px solid #999;
+    padding: 8px;
+    font-weight: 600;
+}
+
+.principal-comment-box {
+    position: relative;
+    min-height: 90px;
+}
+
+.result-stamp {
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    opacity: 0.75;
+    transform: rotate(-8deg);
+}
+
+@media print {
+    .sidebar,
+    .navbar,
+    .no-print,
+    .page-actions,
+    button {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+    }
+
+    .content-wrapper,
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .result-sheet {
+        border: none;
+        padding: 20px;
+    }
+}
+</style>
+
+{% endblock %}

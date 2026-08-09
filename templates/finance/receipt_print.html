@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            padding:40px;
+        }
+
+        .receipt{
+            max-width:700px;
+            margin:auto;
+            border:1px solid #ccc;
+            padding:40px;
+        }
+
+        .title{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        td{
+            padding:10px;
+            border-bottom:1px solid #eee;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="receipt">
+
+    <div class="title">
+
+        <h2>
+            {{ payment.invoice.school.name }}
+        </h2>
+
+        <h3>
+            PAYMENT RECEIPT
+        </h3>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <td><strong>Receipt No</strong></td>
+            <td>#{{ payment.id }}</td>
+        </tr>
+
+        <tr>
+            <td><strong>Student</strong></td>
+            <td>
+                {{ payment.invoice.student.user.get_full_name }}
+            </td>
+        </tr>
+
+        <tr>
+            <td><strong>Amount Paid</strong></td>
+            <td>₦{{ payment.amount }}</td>
+        </tr>
+
+        <tr>
+            <td><strong>Method</strong></td>
+            <td>{{ payment.get_payment_method_display }}</td>
+        </tr>
+
+        <tr>
+            <td><strong>Date</strong></td>
+            <td>{{ payment.payment_date }}</td>
+        </tr>
+
+        <tr>
+            <td><strong>Reference</strong></td>
+            <td>{{ payment.reference|default:"—" }}</td>
+        </tr>
+
+    </table>
+
+</div>
+
+<script>
+    window.print()
+</script>
+
+</body>
+</html>

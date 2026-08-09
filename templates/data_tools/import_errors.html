@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Import Errors</h3>
+            <p class="text-muted mb-0">
+                Review rows that could not be imported.
+            </p>
+        </div>
+
+        <a href="{% url 'import_students_csv' %}"
+           class="btn btn-outline-primary">
+            Try Again
+        </a>
+    </div>
+
+    <div class="content-card">
+        {% for error in errors %}
+            <div class="alert alert-danger rounded-4">
+                {{ error }}
+            </div>
+        {% empty %}
+            <p class="text-muted mb-0">
+                No errors found.
+            </p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

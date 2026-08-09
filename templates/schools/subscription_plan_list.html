@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Subscription Plan Manager</h3>
+        <p class="text-muted mb-0">
+            Create, edit and control SaaS subscription plans for schools.
+        </p>
+    </div>
+
+    <a href="{% url 'subscription_plan_create' %}" class="btn btn-primary">
+        + Create Plan
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+
+    {% for plan in plans %}
+        <div class="col-lg-4">
+            <div class="content-card h-100 {% if plan.is_active %}border border-success{% else %}border border-danger{% endif %}">
+
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">
+                            {{ plan.name }}
+                        </h5>
+
+                        <span class="badge bg-primary">
+                            {{ plan.get_billing_cycle_display }}
+                        </span>
+                    </div>
+
+                    {% if plan.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Disabled</span>
+                    {% endif %}
+                </div>
+
+                <h2 class="fw-bold text-primary mb-3">
+                    ₦{{ plan.price }}
+                </h2>
+
+                <p class="text-muted">
+                    {{ plan.description|default:"No description provided." }}
+                </p>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <small class="text-muted">Max Students</small>
+                            <div class="fw-bold">{{ plan.max_students }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <small class="text-muted">Max Staff</small>
+                            <div class="fw-bold">{{ plan.max_staff }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 small">
+                    <div>
+                        {% if plan.cbt_enabled %}✅{% else %}❌{% endif %}
+                        CBT
+                    </div>
+
+                    <div>
+                        {% if plan.finance_enabled %}✅{% else %}❌{% endif %}
+                        Finance
+                    </div>
+
+                    <div>
+                        {% if plan.parent_portal_enabled %}✅{% else %}❌{% endif %}
+                        Parent Portal
+                    </div>
+
+                    <div>
+                        {% if plan.result_checker_enabled %}✅{% else %}❌{% endif %}
+                        Result Checker
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'subscription_plan_update' plan.id %}"
+                       class="btn btn-outline-primary w-50">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'subscription_plan_toggle' plan.id %}"
+                       class="btn {% if plan.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} w-50">
+                        {% if plan.is_active %}
+                            Disable
+                        {% else %}
+                            Activate
+                        {% endif %}
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="content-card text-center py-5">
+                <h5 class="fw-bold">No subscription plans yet</h5>
+                <p class="text-muted">
+                    Create your first SaaS subscription plan.
+                </p>
+
+                <a href="{% url 'subscription_plan_create' %}"
+                   class="btn btn-primary">
+                    Create Plan
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
